@@ -1,4 +1,4 @@
-nav{
+.Navbar{
     background-color: #63147d;
     display: flex;
     justify-content: space-between;
@@ -6,7 +6,7 @@ nav{
     padding: 0 40px;
 }
 
-nav h1{
+.Navbar h1{
     color: #fff1fd;
     font-size: 28px;
     font-family: Georgia, serif;
@@ -14,7 +14,7 @@ nav h1{
     padding: 16px 0;
 }
 
-nav ul{
+.Navbar ul{
     list-style: none;
     display: flex;
     gap: 8px;
@@ -22,7 +22,7 @@ nav ul{
     padding: 0;
 }
 
-nav ul li{
+.Navbar ul li{
     color: #f5f0e8;
     font-size: 12px;
     letter-spacing: 1px;
@@ -31,6 +31,6 @@ nav ul li{
     cursor: pointer;
 }
 
-nav ul li:hover{
+.Navbar ul li:hover{
     background-color: #6f6992;
 }

@@ -2,7 +2,7 @@ import './Navbar.css'
 
 function Navbar(){
     return(
-        <nav>
+        <nav className='Navbar'>
             <h1>CIAM</h1>
             <ul>
                 <li>Inicio</li>

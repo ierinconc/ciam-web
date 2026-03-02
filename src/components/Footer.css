@@ -1,0 +1,21 @@
+.footer{
+    background-color: #fff1fd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 40px ;
+}
+
+.footer ul{
+    font-size: 10px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    letter-spacing: 2px;
+    padding: 16px 0px;
+    list-style: none;
+    display: flex;
+
+}
+
+.footer ul li{
+    padding: 0px 25px;
+}
