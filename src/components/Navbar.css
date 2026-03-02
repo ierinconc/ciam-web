@@ -1,0 +1,36 @@
+nav{
+    background-color: #63147d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+}
+
+nav h1{
+    color: #fff1fd;
+    font-size: 28px;
+    font-family: Georgia, serif;
+    letter-spacing: 2px;
+    padding: 16px 0;
+}
+
+nav ul{
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li{
+    color: #f5f0e8;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 14px 16px;
+    cursor: pointer;
+}
+
+nav ul li:hover{
+    background-color: #6f6992;
+}
