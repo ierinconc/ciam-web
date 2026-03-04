@@ -1,0 +1,40 @@
+.articles-section {
+    padding: 40px
+}
+
+.articles-section h2 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #7a7469;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #c8c0b0;
+
+}
+
+.articles-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.article-card {
+    border: 1px solid #c8c0b0;
+    padding: 24px;
+    cursor: pointer;
+    transition: brackground 0.2s;
+}
+
+article-card:hover{
+    background: #ede8dc;
+}
+
+.article-card h3 {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    line-height: 1.4;
+    color: #0f0e0c;
+    
+}
