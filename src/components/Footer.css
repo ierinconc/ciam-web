@@ -1,21 +1,47 @@
-.footer{
-    background-color: #fff1fd;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0px 40px ;
+.footer {
+    background-color: #1a1a1a;
+    color: #f5f0e8;
+    padding: 48px  24px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 32px;
+    user-select: none;
 }
 
-.footer ul{
-    font-size: 10px;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+.footer-brand h3{
+    font-family: Georgia - serif;
+    font-size: 22px;
+    font-weight: 900;
     letter-spacing: 2px;
-    padding: 16px 0px;
-    list-style: none;
-    display: flex;
-
+    margin-bottom: 8px;
+    color: white;
 }
 
-.footer ul li{
-    padding: 0px 25px;
+.footer-brand p {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.6;
+}
+
+.footer-info p, .footer-social p{
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.footer-info p:hover, .footer-social p:hover{
+    color: white;
+}
+
+.footer-copy {
+    grid-column:1 / -1;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 1px;
+    text-transform: uppercase; 
 }
