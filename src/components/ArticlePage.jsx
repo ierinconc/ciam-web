@@ -1,8 +1,11 @@
 import { useState , useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import './ArticlePage.css'
 
 
 function ArticlePage (){
+    const navigate = useNavigate()
     const {id} = useParams()
     const [article, setArticle] = useState(null)
 
@@ -16,9 +19,15 @@ function ArticlePage (){
     if(!article) return <p>Cargando...</p>
 
     return (
-        <div>
+        <div className="article-page">
+            <div className='back-button' onClick={() => navigate('/')}> ← Volver al inicio
+
+            </div>
             <h1 dangerouslySetInnerHTML={{ __html: article.title.rendered }} />
-            <div dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
+            <div className='article-meta'>
+                CIAM · Centro de Investigación, Análisis y Mediaciones
+            </div>
+            <div className='article-body' dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
         </div>
     )
 

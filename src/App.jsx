@@ -10,9 +10,13 @@ function App() {
   return (
     <BrowserRouter>
       <Navbar />
-      <Hero />
       <Routes>
-        <Route path="/" element={<ArticleList />} />
+        <Route path="/" element={
+          <>
+            <Hero />
+            <ArticleList />
+          </>
+        } />
         <Route path="/articulo/:id" element={<ArticlePage />} />
       </Routes>
       <Footer />
