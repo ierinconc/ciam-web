@@ -16,6 +16,7 @@ function ArticleList() {
         {articles.map(article => (
             <div key={article.id} className="article-card">
             <h3 dangerouslySetInnerHTML={{ __html: article.title.rendered }} />
+            <p dangerouslySetInnerHTML={{ __html: article.excerpt.rendered }} />
             </div>
         ))}
         </div>
