@@ -12,6 +12,11 @@
     font-family: Georgia, serif;
     letter-spacing: 2px;
     padding: 16px 0;
+    
+}
+
+.Navbar h1:hover{
+    cursor: pointer;
 }
 
 .Navbar ul{

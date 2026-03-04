@@ -1,9 +1,11 @@
 import './Navbar.css'
+import { useNavigate } from 'react-router-dom'
 
 function Navbar(){
+    const navigate = useNavigate()
     return(
         <nav className='Navbar'>
-            <h1>CIAM</h1>
+            <h1 onClick={()=>{navigate('/')}}>CIAM</h1>
             <ul>
                 <li>Inicio</li>
                 <li>Política Nacional</li>
