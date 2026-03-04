@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ArticleList from './components/ArticleList'
+import ArticlePage from './components/ArticlePage'
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<ArticleList />} />
+        <Route path="/articulo/:id" element={<ArticlePage />} />
       </Routes>
       <Footer />
     </BrowserRouter>

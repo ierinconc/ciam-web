@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './ArticleList.css'
+import { useNavigate } from 'react-router-dom'
 function ArticleList() { 
     const [articles, setArticles] = useState ([])
 
@@ -9,14 +10,15 @@ function ArticleList() {
         .then(data => setArticles(data))
     }, [])
 
+    const navigate = useNavigate()
     return (
     <div className="articles-section">
         <h2>Últimos Artículos</h2>
         <div className="articles-grid">
         {articles.map(article => (
-            <div key={article.id} className="article-card">
-            <h3 dangerouslySetInnerHTML={{ __html: article.title.rendered }} />
-            <p dangerouslySetInnerHTML={{ __html: article.excerpt.rendered }} />
+            <div key={article.id} className="article-card" onClick={()=> navigate(`/articulo/${article.id}`)}>
+                <h3 dangerouslySetInnerHTML={{ __html: article.title.rendered }} />
+                <p dangerouslySetInnerHTML={{ __html: article.excerpt.rendered }} />
             </div>
         ))}
         </div>
