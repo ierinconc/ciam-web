@@ -45,3 +45,17 @@
     letter-spacing: 1px;
     text-transform: uppercase; 
 }
+
+.footer-social a {
+    display: block;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    margin-bottom: 6px;
+    font-size: 13px;
+    transition: color 0.2s;
+}
+
+.footer-social a:hover {
+    color: white;
+    text-decoration: none;
+}
