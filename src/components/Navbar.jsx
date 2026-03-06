@@ -13,10 +13,10 @@ function Navbar(){
                 <li className='nav-dropdown'>
                     Proyectos
                     <ul className='dropdown-menu'>
-                        <li onClick={()=>{('/blog')}}>Blog</li>
-                        <li onClick={()=>{('/proyectos/tarasea')}}>Tarasea</li>
-                        <li onClick={()=>{('/proyectos/inerlocuciones')}}>Interlocuciones</li>
-                        <li onClick={()=>{('/proyectos/polifonias')}}>Polifonias</li>
+                        <li onClick={()=>navigate('/blog')}>Blog</li>
+                        <li onClick={()=>navigate('/proyectos/tarasea')}>Tarasea</li>
+                        <li onClick={()=>navigate('/proyectos/inerlocuciones')}>Interlocuciones</li>
+                        <li onClick={()=>navigate('/proyectos/polifonias')}>Polifonias</li>
                     </ul>
                 </li>
                 <li onClick={()=>('/archivo')}>Archivo</li>
