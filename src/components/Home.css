@@ -13,7 +13,7 @@
     font-family: Georgia, serif;
     font-size: 36px;
     font-weight: 900;
-    color: #6a0dad;
+    color: #63147d;
     margin-bottom: 24px;
 }
 
@@ -28,7 +28,7 @@
 .mision-vision {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background-color: #6a0dad;
+    background-color: #63147d;
     padding: 80px 60px;
     gap: 60px;
 }
@@ -57,7 +57,7 @@
     font-family: Georgia, serif;
     font-size: 36px;
     font-weight: 900;
-    color: #6a0dad;
+    color: #63147d;
     text-align: center;
     margin-bottom: 48px;
 }
@@ -73,14 +73,14 @@
 .servicio-card {
     background-color: white;
     padding: 40px;
-    border-left: 4px solid #6a0dad;
+    border-left: 4px solid #63147d;
 }
 
 .servicio-card h3 {
     font-family: Georgia, serif;
     font-size: 20px;
     font-weight: 900;
-    color: #6a0dad;
+    color: #63147d;
     margin-bottom: 12px;
 }
 

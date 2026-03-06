@@ -18,7 +18,14 @@ function App() {
             <Home />
           </>
         } />
+        <Route path="/servicios" element={<div>Servicios</div>} />
+        <Route path="/equipo" element={<div>Equipo</div>} />
+        <Route path="/blog" element={<ArticleList />} />
         <Route path="/articulo/:id" element={<ArticlePage />} />
+        <Route path="/proyectos/tarasea" element={<div>Tarasea</div>} />
+        <Route path="/proyectos/interlocuciones" element={<div>Interlocuciones</div>} />
+        <Route path="/proyectos/polifonias" element={<div>Polifonías</div>} />
+        <Route path="/archivo" element={<div>Archivo</div>} />
       </Routes>
       <Footer />
     </BrowserRouter>
