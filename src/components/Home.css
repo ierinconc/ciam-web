@@ -1,0 +1,92 @@
+.home {
+    background-color: #f5f0e8;
+}
+
+.quienes-somos {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 80px 24px;
+    text-align: center;
+}
+
+.quienes-somos h2 {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: #6a0dad;
+    margin-bottom: 24px;
+}
+
+.quienes-somos p {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    line-height: 1.8;
+    color: #2a2a2a;
+    background-color: transparent;
+}
+
+.mision-vision {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: #6a0dad;
+    padding: 80px 60px;
+    gap: 60px;
+}
+
+.mision h2, .vision h2 {
+    font-family: Georgia, serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 16px;
+}
+
+.mision p, .vision p {
+    font-family: Georgia, serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.85);
+}
+
+.servicios {
+    padding: 80px 60px;
+    background-color: #f5f0e8;
+}
+
+.servicios h2 {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: #6a0dad;
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.servicios-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.servicio-card {
+    background-color: white;
+    padding: 40px;
+    border-left: 4px solid #6a0dad;
+}
+
+.servicio-card h3 {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: 900;
+    color: #6a0dad;
+    margin-bottom: 12px;
+}
+
+.servicio-card p {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #444;
+    background-color: transparent;
+}

@@ -4,6 +4,7 @@ import Footer from './components/Footer'
 import ArticleList from './components/ArticleList'
 import ArticlePage from './components/ArticlePage'
 import Hero from './components/Hero'
+import Home from './components/Home'
 
 
 function App() {
@@ -14,7 +15,7 @@ function App() {
         <Route path="/" element={
           <>
             <Hero />
-            <ArticleList />
+            <Home />
           </>
         } />
         <Route path="/articulo/:id" element={<ArticlePage />} />
