@@ -10,12 +10,13 @@
     z-index: 100;
 }
 
-.navbar h1 {
+.Navbar h1 {
     color: white;
     font-family: Georgia, serif;
     font-size: 24px;
     cursor: pointer;
     user-select: none;
+    cursor: pointer;
 }
 
 .nav-links {

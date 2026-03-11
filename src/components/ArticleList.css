@@ -1,40 +1,95 @@
-.articles-section {
-    padding: 40px
+.blog-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 24px;
 }
 
-.articles-section h2 {
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-size: 13px;
-    letter-spacing: 3px;
+.blog-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.blog-header h1 {
+    font-family: Georgia, serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: #63147d;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.blog-header p {
+    font-size: 14px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: #7a7469;
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid #c8c0b0;
-
+    color: #888;
 }
 
-.articles-grid{
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+.blog-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
 }
 
-.article-card {
-    border: 1px solid #c8c0b0;
-    padding: 24px;
+.blog-card {
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
     cursor: pointer;
-    transition: brackground 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: row;
 }
 
-article-card:hover{
-    background: #ede8dc;
+.blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.12);
 }
 
-.article-card h3 {
+.blog-card-img {
+    padding: 10px;
+    width: 290px;
+    min-width: 290px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.blog-card-body {
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.blog-card-body h3 {
     font-family: Georgia, serif;
     font-size: 18px;
+    font-weight: 900;
+    color: #63147d;
+    margin-bottom: 12px;
     line-height: 1.4;
-    color: #0f0e0c;
-    
+}
+
+.blog-card-body h3:hover{
+    color: #FFBD59;
+}
+
+.blog-card-body p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #666;
+    margin-bottom: 16px;
+}
+
+.blog-leer {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #63147d;
+    font-weight: 700;
+}
+.blog-leer:hover{
+    color: #FFBD59;
+
 }

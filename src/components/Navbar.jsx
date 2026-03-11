@@ -7,9 +7,9 @@ function Navbar(){
         <nav className='Navbar'>
             <h1 onClick={()=>{navigate('/')}}>CIAM</h1>
             <ul className='nav-links'>
-                <li onClick={() => {('/')}}>Inicio</li>
-                <li onClick={()=>{('/servicios')}}>Servicios</li>
-                <li onClick={()=>{('/equipo')}}>Equipo</li>
+                <li onClick={() => navigate('/')}>Inicio</li>
+                <li onClick={()=> navigate('/servicios')}>Servicios</li>
+                <li onClick={()=> navigate('/equipo')}>Equipo</li>
                 <li className='nav-dropdown'>
                     Proyectos
                     <ul className='dropdown-menu'>
@@ -19,7 +19,7 @@ function Navbar(){
                         <li onClick={()=>navigate('/proyectos/polifonias')}>Polifonias</li>
                     </ul>
                 </li>
-                <li onClick={()=>('/archivo')}>Archivo</li>
+                <li onClick={()=> navigate('/archivo')}>Archivo</li>
             </ul>
         </nav>
     )
