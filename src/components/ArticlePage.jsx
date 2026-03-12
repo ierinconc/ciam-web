@@ -20,10 +20,12 @@ function ArticlePage (){
 
     return (
         <div className="article-page">
-            <div className='back-button' onClick={() => navigate('/')}> ← Volver al inicio
-
-            </div>
-            
+            <div className='back-button' onClick={() => navigate('/')}> ← Volver al inicio</div>
+            <p className='article-meta'>
+                {new Date(article.date).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+                 · {article._embedded.author[0].name}
+                 · {article._embedded['wp:term'][0].map(cat => cat.name).join(', ')}
+            </p>
             <h1 dangerouslySetInnerHTML={{ __html: article.title.rendered }} />
             {article._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
                 <img className="article-image" src={article._embedded['wp:featuredmedia'][0].source_url} alt="imagen del artículo" />
