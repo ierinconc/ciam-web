@@ -10,7 +10,7 @@ function ArticlePage (){
     const [article, setArticle] = useState(null)
 
     useEffect(() => {
-        fetch(`https://centrociam.org/wp-json/wp/v2/posts/${id}`)
+        fetch(`https://centrociam.org/wp-json/wp/v2/posts/${id}?_embed`)
         .then(response => response.json())
         .then(data => setArticle(data))
 
@@ -23,7 +23,11 @@ function ArticlePage (){
             <div className='back-button' onClick={() => navigate('/')}> ← Volver al inicio
 
             </div>
+            
             <h1 dangerouslySetInnerHTML={{ __html: article.title.rendered }} />
+            {article._embedded?.['wp:featuredmedia']?.[0]?.source_url && (
+                <img className="article-image" src={article._embedded['wp:featuredmedia'][0].source_url} alt="imagen del artículo" />
+            )}
             <div className='article-meta'>
                 CIAM · Centro de Investigación, Análisis y Mediaciones
             </div>
