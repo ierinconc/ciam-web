@@ -9,11 +9,13 @@
 
 body {
   background-color: #ffffff;
+  background-image: '././assets';
   font-family: 'Montserrat', sans-serif;
 
 }
-h1{
-  font-weight: 700;
+h1 {
+    font-weight: 700;
+    color: #63147d;
 }
 
 p{

@@ -1,24 +1,27 @@
 .article-page{
-    max-width: 800px;
+    max-width: 900px;
     margin: 60px auto;
     padding: 0 24px;
 }
 
 .article-page h1{
-    font-family: '';
-    font-size: 42px;
-    font-weight: 900;
+    
+    font-size: 56px;
+    font-weight: 700;
+    max-width: 760px;
     line-height: 1.2;
-    color: #0f0e0c;
+    color: #63147d;
     margin-bottom: 24px;
+    text-transform: uppercase;
 }
 
+
 .article-meta {
-    font-size: 13px;
+    font-size: 14px;
     color: #63147d;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     padding-bottom: 24px;
     border-bottom: 1px solid #c8c0b0;
 }
@@ -26,12 +29,21 @@
 .article-body{
     
     font-size: 18px;
-    line-height: 1.8;
+    line-height: 1.5;
     color: #2a2a2a;
 }
 
+
+
+.article-body h4 {
+    color: #63147d;
+    font-size: 20px;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
 .article-body p{
-    margin-bottom: 24px;
+    margin-bottom: 10px;
 }
 
 .back-button {
@@ -53,6 +65,7 @@
 .article-image{
 
     width: 100%;
+    max-width: 900px;
     height: 450px;
     object-fit: cover;
     border-radius: 4px;
