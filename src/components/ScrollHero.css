@@ -1,0 +1,50 @@
+.scroll-hero{
+    position: relative;
+    height: 200vh;
+    background-image: url('/EQUIPO.png');
+    background-size: cover;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.sh-logo {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+.sh-logo img {
+    width: 1000px;
+}
+
+.sh-texto {
+    position: absolute;
+    left: 55%;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 400px;
+    opacity: 0;
+    color: white;
+    text-align: left;
+}
+.sh-texto h2{
+    font-size: 50px;
+    color: white;
+    margin-bottom: 16px;
+}
+
+.sh-texto p{
+    font-size: 25px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.sh-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

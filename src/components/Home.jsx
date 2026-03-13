@@ -4,12 +4,12 @@ import "./Home.css"
 function Home () {
     return(
         <div className="Home">
-            <section className="quienes-somos">
+            {/* <section className="quienes-somos">
                 <div className="qs-overlay">
                     <h2>¿Quiénes somos?</h2>
                     <p>La Corporación CIAM es un Centro de Pensamiento dedicado a articular y fortalecer los saberes que circulan en la democracia colombiana, con el objetivo de construir colectivamente estrategias de acción política para el cuidado y gobierno de la vida común.</p>
                 </div>
-            </section>
+            </section> */}
             
             <section className="mision-vision">
                 <div className="vision">

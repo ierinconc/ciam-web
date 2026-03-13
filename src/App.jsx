@@ -5,7 +5,7 @@ import ArticleList from './components/ArticleList'
 import ArticlePage from './components/ArticlePage'
 import Hero from './components/Hero'
 import Home from './components/Home'
-
+import ScrollHero from './components/ScrollHero'
 
 function App() {
   return (
@@ -14,7 +14,8 @@ function App() {
       <Routes>
         <Route path="/" element={
           <>
-            <Hero />
+            
+            <ScrollHero />
             <Home />
           </>
         } />
