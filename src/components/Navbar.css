@@ -8,16 +8,10 @@
     position: sticky;
     top: 0;
     z-index: 100;
+    transition: height 0.3s ease;
 }
 
-.Navbar h1 {
-    color: white;
-    font-family: Georgia, serif;
-    font-size: 50px;
-    cursor: pointer;
-    user-select: none;
-    cursor: pointer;
-}
+
 
 .nav-links {
     list-style: none;
@@ -71,4 +65,20 @@
 
 .nav-dropdown:hover .dropdown-menu {
     display: block;
+}
+
+.navbar-logo {
+    height: 125px;
+    cursor: pointer;
+    transition: height 0.3s ease;
+}
+
+.navbar-scrolled {
+    height: 45px;
+    background-color: rgba(99, 20, 125, 0.89);
+    backdrop-filter: blur(8px);
+}
+
+.navbar-scrolled .navbar-logo {
+    height: 110px;
 }

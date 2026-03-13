@@ -34,14 +34,30 @@
     color: rgba(255,255,255,0.9);
 }
 
-/* Misión y Visión */
+
 .mision-vision {
     display: grid;
     grid-template-columns: 1fr 1fr;
     background-color: #63147d;
     padding: 80px 80px;
     gap: 80px;
+    position: relative;  
+    
+    overflow: visible;     
 }
+
+.mision-vision::after {
+    content: "";
+    position: absolute;
+    bottom: -60px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background-color: #63147d;
+    clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
+    z-index: 2;
+}
+
 
 .mision h2, .vision h2 {
     
@@ -54,17 +70,22 @@
 }
 
 .mision p, .vision p {
-   
     font-size: 17px;
     line-height: 1.9;
     color: rgba(255,255,255,0.9);
 }
 
-/* Servicios */
+
 .servicios {
-    padding: 80px 60px;
+    position: relative;
     background-color: #ffffff;
+    padding: 180px 60px 80px;
+    
 }
+
+
+
+
 
 .servicios h2 {
     
@@ -75,7 +96,10 @@
     letter-spacing: 3px;
     text-transform: uppercase;
     margin-bottom: 48px;
+    position: relative;
+    z-index: 2;
 }
+
 
 .servicios-grid {
     display: grid;
@@ -83,6 +107,8 @@
     gap: 24px;
     max-width: 1000px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
 }
 
 .servicio-card {
@@ -112,3 +138,4 @@
     line-height: 1.8;
     color: #555;
 }
+

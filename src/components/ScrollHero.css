@@ -15,7 +15,7 @@
 }
 
 .sh-logo img {
-    width: 1000px;
+    width: 950px;
 }
 
 .sh-texto {
@@ -35,7 +35,7 @@
 }
 
 .sh-texto p{
-    font-size: 25px;
+    font-size: 20px;
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.85);
 }
@@ -47,4 +47,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.sh-diagonal{
+    position:absolute;
+    bottom:-1px;
+    left:0;
+    width:100%;
+    height:180px;
+    background:#63147d;
+    clip-path: polygon(0 20%, 100% 60%, 100% 100%, 0 100%);
+    z-index:2;
 }

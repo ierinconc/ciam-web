@@ -35,6 +35,7 @@ function ScrollHero() {
                     <h2>¿Quiénes Somos?</h2>
                     <p>La Corporación CIAM es un Centro de Pensamiento dedicado a articular y fortalecer los saberes que circulan en la democracia colombiana, con el objetivo de construir colectivamente estrategias de acción política para el cuidado y gobierno de la vida común.</p>
                 </div>
+                 <div className="sh-diagonal"></div>
             </div>
            
         </div>

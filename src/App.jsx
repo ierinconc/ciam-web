@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={
           <>
-            
+            {/* <Hero /> */}
             <ScrollHero />
             <Home />
           </>
