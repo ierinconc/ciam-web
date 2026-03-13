@@ -1,5 +1,17 @@
 /* Quiénes somos */
 .quienes-somos {
+    background-image: url('/EQUIPO.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;  
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    padding: 80px 24px;
+    text-align: center;
+}
+.qs-overlay {
+    background-color: rgba(99, 20, 125, 0.75);
     max-width: 800px;
     margin: 0 auto;
     padding: 80px 24px;
@@ -7,19 +19,19 @@
 }
 
 .quienes-somos h2 {
-    font-family: Georgia, serif;
+    
     font-size: 36px;
     font-weight: 900;
-    color: #63147d;
+    color: #ffffff;
     margin-bottom: 24px;
     letter-spacing: 1px;
 }
 
 .quienes-somos p {
-    font-family: Georgia, serif;
+    
     font-size: 19px;
     line-height: 1.9;
-    color: #333;
+    color: rgba(255,255,255,0.9);
 }
 
 /* Misión y Visión */
@@ -32,7 +44,7 @@
 }
 
 .mision h2, .vision h2 {
-    font-family: Georgia, serif;
+    
     font-size: 13px;
     font-weight: 900;
     color: rgba(255,255,255,0.5);
@@ -42,7 +54,7 @@
 }
 
 .mision p, .vision p {
-    font-family: Georgia, serif;
+   
     font-size: 17px;
     line-height: 1.9;
     color: rgba(255,255,255,0.9);
@@ -55,7 +67,7 @@
 }
 
 .servicios h2 {
-    font-family: Georgia, serif;
+    
     font-size: 13px;
     font-weight: 900;
     color: #63147d;
@@ -88,7 +100,7 @@
 }
 
 .servicio-card h3 {
-    font-family: Georgia, serif;
+    
     font-size: 18px;
     font-weight: 900;
     color: #63147d;
