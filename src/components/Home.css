@@ -1,4 +1,10 @@
-/* Quiénes somos */
+.Home {
+
+    background-image: url('/EQUIPO.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
 .quienes-somos {
     background-image: url('/EQUIPO.png');
     background-size: cover;
@@ -37,13 +43,28 @@
 
 .mision-vision {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    background-color: #63147d;
-    padding: 80px 80px;
-    gap: 80px;
-    position: relative;  
+    grid-template-columns: 1fr 1px 1fr;
     
+    background-attachment: fixed;
+    background-image: url('/EQUIPO.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    padding: 40px 80px 60px;
+    gap: 0;
+    position: relative;  
     overflow: visible;     
+    margin-bottom: 0;
+}
+.mision{
+    padding-right: 60px;
+}
+.vision{
+    padding-left: 60px;
+}
+.mision-vision-divider {
+    background-color: rgba(255,255,255,0.2);
+    width: 1px;
 }
 
 .mision-vision::after {
@@ -53,33 +74,40 @@
     left: 0;
     width: 100%;
     height: 60px;
-    background-color: #63147d;
+    background-color: rgba(99, 20, 125, 0.95);
     clip-path: polygon(0 0, 100% 0, 100% 40%, 0 100%);
     z-index: 2;
 }
 
 
+
+
 .mision h2, .vision h2 {
     
-    font-size: 13px;
+    font-size: 30px;
     font-weight: 900;
-    color: rgba(255,255,255,0.5);
+    color: #f5a623;
     letter-spacing: 3px;
     text-transform: uppercase;
     margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #f5a623;
+    display: inline-block;
+
 }
 
 .mision p, .vision p {
-    font-size: 17px;
+    font-size: 20px;
     line-height: 1.9;
-    color: rgba(255,255,255,0.9);
+    color: white;
 }
 
 
 .servicios {
+    margin-top: 0;
     position: relative;
     background-color: #ffffff;
-    padding: 180px 60px 80px;
+    padding: 80px 60px ;
     
 }
 
@@ -139,3 +167,17 @@
     color: #555;
 }
 
+.mision-vision::after {
+    z-index: 1;
+}
+
+.servicios::before {
+    z-index: 2;
+}
+
+
+.servicio-icono {
+    font-size: 32px;
+    color: #f5a623;
+    margin-bottom: 16px;
+}
