@@ -19,7 +19,11 @@ function ArticlePage (){
     if(!article) return <p>Cargando...</p>
 
     return (
-        <div className="article-page">
+        <div className="article-wrapper">
+            <div className="article-bg" aria-hidden="true" />
+            <div className="article-bg-overlay" aria-hidden="true" />
+
+            <div className="article-page">
             <div className='back-button' onClick={() => navigate('/')}> ← Volver al inicio</div>
 
             <h1 dangerouslySetInnerHTML={{ __html: article.title.rendered }} />
@@ -32,6 +36,7 @@ function ArticlePage (){
             </p>
         
             <div className='article-body' dangerouslySetInnerHTML={{ __html: article.content.rendered }} />
+        </div>
         </div>
     )
 

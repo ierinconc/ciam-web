@@ -1,0 +1,67 @@
+/* ============================================================
+   ScrollToTop — botón flotante para volver arriba
+   ============================================================ */
+
+.scroll-top {
+    position: fixed;
+    right: clamp(1.25rem, 3vw, 2.25rem);
+    bottom: clamp(1.25rem, 3vw, 2.25rem);
+    z-index: 90;
+
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--color-accent);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    cursor: pointer;
+    box-shadow:
+        0 4px 12px rgba(91, 18, 104, 0.25),
+        0 12px 32px rgba(26, 20, 16, 0.12);
+
+    /* Estado oculto por defecto */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.85);
+
+    transition:
+        opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.4s,
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.scroll-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.scroll-top:hover {
+    background-color: var(--color-accent-deep);
+    /* Halo dorado al hover, conectando con el resto del navbar */
+    box-shadow:
+        0 0 0 4px rgba(200, 155, 60, 0.15),
+        0 6px 16px rgba(91, 18, 104, 0.35),
+        0 18px 40px rgba(26, 20, 16, 0.18);
+    transform: translateY(-2px) scale(1.05);
+}
+
+.scroll-top:active {
+    transform: translateY(0) scale(0.96);
+}
+
+.scroll-top svg {
+    transition: transform 0.3s ease;
+}
+
+.scroll-top:hover svg {
+    transform: translateY(-2px);
+}

@@ -1,7 +1,58 @@
+/* ============================================================
+   ARTICLE WRAPPER — fondo atmosférico (libros desaturados + overlays)
+   ============================================================ */
+.article-wrapper {
+    position: relative;
+    min-height: 100vh;
+    isolation: isolate;
+    overflow-x: clip;
+    /* Padding-top para no quedar debajo del navbar fijo */
+    padding-top: clamp(5rem, 8vw, 6rem);
+}
+
+.article-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background-image: url('/articulo-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(0.92) blur(3px) brightness(1.12) contrast(0.92);
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+.article-bg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        /* Vignette claro */
+        radial-gradient(ellipse 120% 90% at center,
+            transparent 0%,
+            rgba(250, 248, 243, 0.55) 75%,
+            rgba(250, 248, 243, 0.88) 100%),
+        /* Capa base crema que vela la foto */
+        linear-gradient(180deg,
+            rgba(250, 248, 243, 0.85) 0%,
+            rgba(250, 248, 243, 0.8) 50%,
+            rgba(241, 236, 224, 0.88) 100%),
+        /* Mancha morada arriba-izquierda */
+        radial-gradient(ellipse 55% 45% at 12% 18%,
+            rgba(91, 18, 104, 0.14) 0%,
+            transparent 60%),
+        /* Mancha dorada abajo-derecha */
+        radial-gradient(ellipse 50% 40% at 88% 82%,
+            rgba(200, 155, 60, 0.13) 0%,
+            transparent 60%);
+}
+
 .article-page{
     max-width: 900px;
     margin: 60px auto;
     padding: 0 24px;
+    position: relative;
 }
 
 .article-page h1{

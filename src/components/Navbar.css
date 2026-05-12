@@ -1,84 +1,324 @@
-.Navbar {
-    background-color: #63147d;  /* en .navbar */
-    padding: 0 40px;
+/* ============================================================
+   Navbar — transiciones fluidas, encoge al scroll, acento dorado
+   ============================================================ */
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    /* Una sola curva ease-out larga para todas las propiedades.
+       Esto hace que el cambio se sienta orquestado, no abrupto. */
+    transition:
+        background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        backdrop-filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        border-bottom-color 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    background-color: transparent;
+    border-bottom: 1px solid transparent;
+}
+
+.navbar-inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 1.4rem var(--container-padding);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 60px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    transition: height 0.3s ease;
+    gap: 1.5rem;
+    /* Mismo timing que el navbar para que padding y altura encojan en sincronía */
+    transition: padding 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* ===== Estado: transparente sobre hero ===== */
+.navbar--transparent {
+    background-color: transparent;
+}
+.navbar--transparent .navbar-links > li,
+.navbar--transparent .navbar-dropdown > span {
+    color: rgba(255, 255, 255, 0.92);
+}
+.navbar--transparent .navbar-toggle span {
+    background-color: white;
+}
+.navbar--transparent .navbar-logo-img--light { opacity: 1; }
+.navbar--transparent .navbar-logo-img--dark { opacity: 0; }
 
+/* ===== Estado: sólido al hacer scroll o en rutas internas ===== */
+.navbar--solid {
+    background-color: rgba(250, 248, 243, 0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    /* Borde dorado fino abajo del navbar (acento sutil de la paleta) */
+    border-bottom-color: var(--color-gold);
+    box-shadow: 0 1px 0 rgba(200, 155, 60, 0.08), 0 6px 24px rgba(26, 20, 16, 0.04);
+}
+.navbar--solid .navbar-inner {
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+}
+.navbar--solid .navbar-links > li,
+.navbar--solid .navbar-dropdown > span {
+    color: var(--color-ink);
+}
+.navbar--solid .navbar-toggle span {
+    background-color: var(--color-ink);
+}
+.navbar--solid .navbar-logo-img--light { opacity: 0; }
+.navbar--solid .navbar-logo-img--dark { opacity: 1; }
 
-.nav-links {
-    list-style: none;
+/* ===== Logo ===== */
+.navbar-logo {
+    position: relative;
     display: flex;
-    gap: 32px;
     align-items: center;
+    height: 64px;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
-.nav-links > li {
-    color: white;
-    font-size: 13px;
-    letter-spacing: 1.5px;
+.navbar-logo-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: auto;
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+/* El primero se queda relative para reservar el ancho */
+.navbar-logo-img--light {
+    position: relative;
+}
+
+/* ===== Links desktop ===== */
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 2.4rem;
+    margin: 0 auto;
+}
+
+.navbar-links > li {
+    position: relative;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
     cursor: pointer;
+    padding: 0.5rem 0;
+    /* Transición del color del texto incluida en el mismo timing global del navbar */
+    transition: color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
-    padding: 20px 0;
+}
+
+.navbar-links > li::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--color-gold);
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hover dorado en los links (acento dorado de la paleta) */
+.navbar-links > li:hover {
+    color: var(--color-gold) !important;
+}
+.navbar-links > li:hover::after {
+    width: 100%;
+}
+
+/* ===== Dropdown de Proyectos ===== */
+.navbar-dropdown {
     position: relative;
 }
-
-.nav-links > li:hover {
-    color: #f0c040;
+.navbar-dropdown > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.navbar-dropdown > span::after {
+    content: '';
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg) translateY(-2px);
+    margin-left: 0.3rem;
+    transition: transform var(--transition-fast);
+}
+.navbar-dropdown:hover > span::after {
+    transform: rotate(225deg) translateX(-2px);
 }
 
-.nav-dropdown {
-    position: relative;
-}
-
-.dropdown-menu {
-    display: none;
+.navbar-submenu {
     position: absolute;
     top: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    min-width: 200px;
+    background-color: var(--color-paper);
+    border: 1px solid rgba(26, 20, 16, 0.08);
+    border-top: 2px solid var(--color-gold);
+    box-shadow: var(--shadow-medium);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+        visibility 0.25s;
+    padding: 0.5rem 0;
+}
+.navbar-submenu.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.navbar-submenu li {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), color var(--transition-fast);
+    text-align: center;
+}
+.navbar-submenu li:hover {
+    background-color: rgba(200, 155, 60, 0.08);
+    color: var(--color-gold);
+}
+
+/* ===== Toggle móvil ===== */
+.navbar-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    padding: 0.5rem;
+    cursor: pointer;
+    width: 36px;
+    align-items: center;
+    justify-content: center;
+    z-index: 102;
+}
+
+.navbar-toggle span {
+    width: 22px;
+    height: 1.5px;
+    background-color: var(--color-ink);
+    transition: transform var(--transition-fast), opacity var(--transition-fast), background-color 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center;
+}
+
+.navbar--mobile-open .navbar-toggle span:nth-child(1) {
+    transform: translateY(6.5px) rotate(45deg);
+}
+.navbar--mobile-open .navbar-toggle span:nth-child(2) {
+    opacity: 0;
+}
+.navbar--mobile-open .navbar-toggle span:nth-child(3) {
+    transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* ===== Menú móvil overlay ===== */
+.navbar-mobile {
+    position: fixed;
+    top: 0;
     left: 0;
-    background-color: #1a1a1a;
-    list-style: none;
-    min-width: 180px;
-    z-index: 200;
+    right: 0;
+    bottom: 0;
+    background-color: var(--color-paper);
+    z-index: 101;
+    padding: 6rem 2rem 3rem;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-base), visibility var(--transition-base);
+}
+.navbar-mobile.is-open {
+    opacity: 1;
+    visibility: visible;
 }
 
-.dropdown-menu li {
-    color: rgba(255,255,255,0.8);
-    font-size: 13px;
-    letter-spacing: 1px;
-    padding: 12px 20px;
+.navbar-mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.navbar-mobile-links > li {
+    font-size: 1.6rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    padding: 1.2rem 0;
+    border-bottom: 1px solid rgba(26, 20, 16, 0.08);
     cursor: pointer;
+    color: var(--color-ink);
+    transition: color var(--transition-fast);
+}
+.navbar-mobile-links > li:hover {
+    color: var(--color-gold);
 }
 
-.dropdown-menu li:hover {
-    background-color: #6a0dad;
-    color: #f5a623;
+.navbar-mobile-group {
+    padding: 1.2rem 0 !important;
+    cursor: default !important;
 }
-
-.nav-dropdown:hover .dropdown-menu {
+.navbar-mobile-group:hover { color: var(--color-ink) !important; }
+.navbar-mobile-label {
     display: block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    margin-bottom: 0.8rem;
 }
-
-.navbar-logo {
-    height: 125px;
+.navbar-mobile-group ul {
+    display: flex;
+    flex-direction: column;
+}
+.navbar-mobile-group ul li {
+    font-size: 1.2rem;
+    font-weight: 300;
+    padding: 0.6rem 0 0.6rem 1rem;
+    border-left: 1px solid rgba(26, 20, 16, 0.12);
+    margin-left: 0.5rem;
+    color: var(--color-ink-soft);
     cursor: pointer;
-    transition: height 0.3s ease;
+    transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.navbar-mobile-group ul li:hover {
+    color: var(--color-gold);
+    border-left-color: var(--color-gold);
 }
 
-.navbar-scrolled {
-    height: 45px;
-    background-color: rgba(99, 20, 125, 0.89);
-    backdrop-filter: blur(8px);
-}
-
-.navbar-scrolled .navbar-logo {
-    height: 110px;
+/* ===== Responsive ===== */
+@media (max-width: 968px) {
+    .navbar-links {
+        display: none;
+    }
+    .navbar-toggle {
+        display: flex;
+    }
+    .navbar-inner {
+        padding-top: 0.9rem;
+        padding-bottom: 0.9rem;
+    }
+    .navbar--mobile-open {
+        background-color: var(--color-paper);
+    }
+    .navbar--mobile-open .navbar-logo-img--light { opacity: 0; }
+    .navbar--mobile-open .navbar-logo-img--dark { opacity: 1; }
+    .navbar--mobile-open .navbar-toggle span {
+        background-color: var(--color-ink);
+    }
 }

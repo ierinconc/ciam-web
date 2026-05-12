@@ -1,0 +1,563 @@
+/* ============================================================
+   Invitations — dos tickers editoriales (Servicios + Publicaciones)
+   Hover: el título outline se rellena, el marquee se enciende,
+   el borde animado con conic-gradient rota.
+   ============================================================ */
+
+.inv {
+    --inv-purple: var(--color-accent, #5b1268);
+    --inv-purple-deep: var(--color-accent-deep, #3d0a47);
+    --inv-gold: var(--color-gold, #c89b3c);
+    --inv-paper: var(--color-paper, #faf8f3);
+    --inv-paper-warm: var(--color-paper-warm, #f1ece0);
+    --inv-ink: var(--color-ink, #1a1410);
+    --inv-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    position: relative;
+    background-color: var(--inv-paper);
+    padding: clamp(5rem, 10vw, 8rem) 0;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Capa de imagen del taller — usa un div interno en lugar de pseudo,
+   para liberar ::before y ::after para los fades de transición */
+.inv .inv-bg-image {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: url('/taller-ciam.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: grayscale(0.95) blur(2px) brightness(1.1) contrast(0.92);
+    opacity: 0.28;
+    transform: scale(1.05);
+    pointer-events: none;
+}
+
+/* Capa de overlay (vignette + manchas) sobre la imagen */
+.inv .inv-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 120% 90% at center,
+            transparent 0%,
+            rgba(250, 248, 243, 0.5) 75%,
+            rgba(250, 248, 243, 0.85) 100%),
+        linear-gradient(180deg,
+            rgba(250, 248, 243, 0.82) 0%,
+            rgba(250, 248, 243, 0.78) 50%,
+            rgba(241, 236, 224, 0.85) 100%),
+        radial-gradient(ellipse 50% 40% at 15% 25%,
+            rgba(91, 18, 104, 0.14) 0%,
+            transparent 60%),
+        radial-gradient(ellipse 45% 40% at 85% 75%,
+            rgba(200, 155, 60, 0.13) 0%,
+            transparent 60%);
+}
+
+/* Transición ARRIBA: fade que se conecta con StrategicNorth */
+.inv::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 180px;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(250, 248, 243, 0.85) 0%,
+        rgba(250, 248, 243, 0) 100%
+    );
+}
+
+/* Transición ABAJO: fade hacia el footer */
+.inv::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(250, 248, 243, 0) 0%,
+        rgba(250, 248, 243, 0.5) 100%
+    );
+}
+
+.inv-container {
+    width: 100%;
+    max-width: var(--container-max, 1280px);
+    margin: 0 auto;
+    padding: 0 var(--container-padding, 2rem);
+}
+
+/* ============ Header ============ */
+.inv-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 6vw, 5rem);
+}
+
+.inv-eyebrow {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--inv-gold);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--inv-gold);
+}
+
+.inv-title {
+    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+    font-weight: 200;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--inv-ink);
+    margin: 0;
+}
+
+.inv-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--inv-purple);
+}
+
+/* ============ Stack de los dos banners ============ */
+.inv-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ============================================================
+   BANNER — el ticker individual
+   ============================================================ */
+.inv-banner {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    background-color: var(--inv-paper);
+    cursor: pointer;
+    transition:
+        transform 0.5s var(--inv-ease),
+        box-shadow 0.5s var(--inv-ease);
+    box-shadow:
+        0 1px 2px rgba(91, 18, 104, 0.04),
+        0 8px 24px rgba(91, 18, 104, 0.04);
+    isolation: isolate;
+}
+
+.inv-banner:focus-visible {
+    outline: 2px solid var(--inv-gold);
+    outline-offset: 4px;
+}
+
+.inv-banner:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 4px 12px rgba(91, 18, 104, 0.06),
+        0 24px 56px rgba(91, 18, 104, 0.1);
+}
+
+/* ============ Borde animado conic ============ */
+.inv-banner-border {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        rgba(91, 18, 104, 0.15),
+        rgba(200, 155, 60, 0.15)
+    );
+    opacity: 0.5;
+    transition: opacity 0.5s ease;
+    z-index: 3;
+}
+
+.inv-banner:hover .inv-banner-border {
+    opacity: 1;
+    animation: invBorderSpin 8s linear infinite;
+    background: conic-gradient(
+        from var(--inv-angle, 0deg),
+        rgba(91, 18, 104, 0.4),
+        rgba(200, 155, 60, 0.7) 25%,
+        rgba(91, 18, 104, 0.8) 50%,
+        rgba(200, 155, 60, 0.7) 75%,
+        rgba(91, 18, 104, 0.4) 100%
+    );
+}
+
+@property --inv-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes invBorderSpin {
+    to { --inv-angle: 360deg; }
+}
+
+/* ============ Capa de relleno (visual de profundidad al hover) ============ */
+.inv-banner-fill {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        ellipse at 30% 50%,
+        rgba(91, 18, 104, 0.04),
+        transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.inv-banner--gold .inv-banner-fill {
+    background: radial-gradient(
+        ellipse at 30% 50%,
+        rgba(200, 155, 60, 0.06),
+        transparent 60%
+    );
+}
+
+.inv-banner:hover .inv-banner-fill {
+    opacity: 1;
+}
+
+/* ============================================================
+   GRID INTERIOR — 2 columnas: texto | CTA
+   ============================================================ */
+.inv-banner-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: clamp(1.5rem, 3vw, 3.5rem);
+    padding: clamp(2rem, 3.5vw, 3rem) clamp(2rem, 4vw, 3.5rem);
+}
+
+/* ============ Columna 1: contenido principal ============ */
+.inv-banner-main {
+    min-width: 0; /* fix para que el texto largo no rompa el grid */
+    overflow: hidden;
+}
+
+.inv-banner-eyebrow {
+    display: block;
+    width: fit-content;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--inv-ink);
+    opacity: 0.55;
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid rgba(26, 20, 16, 0.15);
+    transition:
+        color 0.5s ease,
+        border-color 0.5s ease,
+        opacity 0.5s ease;
+}
+
+.inv-banner:hover .inv-banner-eyebrow {
+    opacity: 1;
+    color: var(--inv-purple);
+    border-bottom-color: var(--inv-purple);
+}
+
+.inv-banner--gold:hover .inv-banner-eyebrow {
+    color: var(--inv-gold);
+    border-bottom-color: var(--inv-gold);
+}
+
+/* ============================================================
+   TÍTULO — tinta lavada en estado base, color sólido al hover.
+   En estado base: el texto se ve sólido pero con opacidad/color
+   tenue (sin outline borroso). Al hover: gana color completo
+   y aparece un subrayado fino que crece de izquierda a derecha.
+   ============================================================ */
+.inv-banner-title {
+    position: relative;
+    display: inline-block;
+    margin: 0 0 1rem;
+    line-height: 1.05;
+    font-size: clamp(1.8rem, 3.8vw, 3rem);
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    /* Estado base: tinta clara pero NÍTIDA — no outline */
+    color: rgba(26, 20, 16, 0.32);
+    transition: color 0.5s ease;
+}
+
+.inv-banner:hover .inv-banner-title {
+    color: var(--inv-purple);
+}
+
+.inv-banner--gold:hover .inv-banner-title {
+    color: var(--inv-gold);
+}
+
+/* Subrayado animado debajo del título */
+.inv-banner-title-underline {
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+        90deg,
+        var(--inv-purple),
+        var(--inv-gold)
+    );
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.7s var(--inv-ease);
+}
+
+.inv-banner:hover .inv-banner-title-underline {
+    transform: scaleX(1);
+}
+
+/* ============ Descripción ============ */
+.inv-banner-desc {
+    font-size: clamp(0.9rem, 1.05vw, 1rem);
+    line-height: 1.65;
+    color: rgba(26, 20, 16, 0.65);
+    margin: 0 0 1.5rem;
+    max-width: 56ch;
+    font-weight: 300;
+    transition: color 0.5s ease;
+}
+
+.inv-banner:hover .inv-banner-desc {
+    color: rgba(26, 20, 16, 0.85);
+}
+
+/* ============================================================
+   MARQUEE de keywords (cinta corredora sutil)
+   ============================================================ */
+.inv-banner-marquee {
+    overflow: hidden;
+    position: relative;
+    height: 1.6rem;
+    /* Mask: hace fade en los extremos para que las keywords no se corten bruscamente */
+    -webkit-mask-image: linear-gradient(
+        90deg,
+        transparent,
+        black 8%,
+        black 92%,
+        transparent
+    );
+    mask-image: linear-gradient(
+        90deg,
+        transparent,
+        black 8%,
+        black 92%,
+        transparent
+    );
+    opacity: 0.45;
+    transition: opacity 0.5s ease;
+}
+
+.inv-banner:hover .inv-banner-marquee {
+    opacity: 1;
+}
+
+.inv-banner-marquee-track {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    white-space: nowrap;
+    /* Animación de movimiento horizontal infinita */
+    animation: invMarquee 45s linear infinite;
+    /* paused al inicio para que solo corra al hover */
+    animation-play-state: paused;
+}
+
+.inv-banner:hover .inv-banner-marquee-track {
+    animation-play-state: running;
+}
+
+@keyframes invMarquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+.inv-banner-keyword {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--inv-purple);
+    flex-shrink: 0;
+}
+
+.inv-banner--gold .inv-banner-keyword {
+    color: var(--inv-gold);
+}
+
+.inv-banner-keyword-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: currentColor;
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   Columna 3: CTA
+   ============================================================ */
+.inv-banner-cta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
+.inv-banner-cta-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--inv-ink);
+    opacity: 0.55;
+    transition:
+        color 0.5s ease,
+        opacity 0.5s ease,
+        transform 0.5s var(--inv-ease);
+}
+
+.inv-banner:hover .inv-banner-cta-label {
+    opacity: 1;
+    color: var(--inv-purple);
+    transform: translateX(-4px);
+}
+
+.inv-banner--gold:hover .inv-banner-cta-label {
+    color: var(--inv-gold);
+}
+
+.inv-banner-cta-arrow {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid rgba(26, 20, 16, 0.2);
+    display: grid;
+    place-items: center;
+    color: var(--inv-ink);
+    transition:
+        border-color 0.5s ease,
+        background-color 0.5s ease,
+        color 0.5s ease,
+        transform 0.6s var(--inv-ease);
+}
+
+.inv-banner:hover .inv-banner-cta-arrow {
+    background-color: var(--inv-purple);
+    border-color: var(--inv-purple);
+    color: white;
+    transform: scale(1.08) rotate(-12deg);
+}
+
+.inv-banner--gold:hover .inv-banner-cta-arrow {
+    background-color: var(--inv-gold);
+    border-color: var(--inv-gold);
+}
+
+.inv-banner-cta-arrow svg {
+    transition: transform 0.5s var(--inv-ease);
+}
+
+.inv-banner:hover .inv-banner-cta-arrow svg {
+    transform: rotate(12deg) translateX(2px);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 968px) {
+    .inv-banner-grid {
+        gap: 1.5rem;
+        padding: 1.75rem 1.5rem;
+    }
+
+    .inv-banner-cta-label {
+        display: none; /* solo queda la flecha en tablet */
+    }
+
+    .inv-banner-cta-arrow {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+@media (max-width: 600px) {
+    .inv {
+        padding: 4rem 0;
+    }
+
+    .inv-banner-grid {
+        grid-template-columns: 1fr auto;
+        gap: 1.25rem 1rem;
+        padding: 1.5rem 1.5rem 1.75rem;
+        align-items: start;
+    }
+
+    .inv-banner-cta {
+        align-self: start;
+    }
+
+    .inv-banner-cta-arrow {
+        width: 44px;
+        height: 44px;
+    }
+
+    .inv-banner-cta-arrow svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .inv-banner-title {
+        font-size: 1.55rem;
+    }
+
+    .inv-banner-desc {
+        margin-bottom: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .inv-banner,
+    .inv-banner *,
+    .inv-banner-marquee-track {
+        transition-duration: 0.1s !important;
+        animation: none !important;
+    }
+}

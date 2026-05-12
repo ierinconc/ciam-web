@@ -1,0 +1,682 @@
+/* ============================================================
+   StrategicNorth — Misión & Visión
+   Burbuja → tarjeta editorial con borde animado de la paleta CIAM
+   ============================================================ */
+
+.sn {
+    /* Tokens locales del componente */
+    --sn-purple: var(--color-accent, #5b1268);
+    --sn-purple-deep: var(--color-accent-deep, #3d0a47);
+    --sn-gold: var(--color-gold, #c89b3c);
+    --sn-paper: var(--color-paper, #faf8f3);
+    --sn-paper-warm: var(--color-paper-warm, #f1ece0);
+    --sn-ink: var(--color-ink, #1a1410);
+
+    /* Una sola curva de easing para todo el componente — coherencia visual */
+    --sn-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --sn-ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(5rem, 12vw, 9rem) 0;
+    background-color: var(--sn-paper);
+}
+
+/* Transición ARRIBA: hace puente entre el hero oscuro y el paper claro.
+   Una banda sutil que desvanece de paper-warm a paper en los primeros pixels.
+   Esto elimina el corte brusco con el hero. */
+.sn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(241, 236, 224, 0.6) 0%,
+        rgba(250, 248, 243, 0) 100%
+    );
+}
+
+/* Transición ABAJO: fade-out hacia el color de la siguiente sección (Invitations).
+   La siguiente sección tiene su propio fondo, pero al fundir los últimos pixels
+   crea la sensación de un "continuo visual" en lugar de corte. */
+.sn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 180px;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(250, 248, 243, 0) 0%,
+        rgba(250, 248, 243, 0.85) 100%
+    );
+}
+
+/* ============ Fondo: foto desaturada + overlays compuestos ============ */
+.sn-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    background-image: url('/ciam-mision-vision-bg.jpg');
+    background-size: cover;
+    background-position: center 40%;
+    filter: grayscale(0.92) brightness(1.05) contrast(0.95);
+    opacity: 0.42;
+}
+
+/* Overlay principal: gradiente diagonal con manchas radiales suaves */
+.sn-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        /* Vignette en las esquinas para concentrar la atención al centro */
+        radial-gradient(ellipse 120% 80% at center,
+            transparent 0%,
+            rgba(241, 236, 224, 0.35) 80%,
+            rgba(241, 236, 224, 0.65) 100%),
+        /* Capa de color: la base crema, pero ligeramente direccional */
+        linear-gradient(135deg,
+            rgba(250, 248, 243, 0.78) 0%,
+            rgba(250, 248, 243, 0.85) 50%,
+            rgba(241, 236, 224, 0.9) 100%),
+        /* Mancha morada arriba-izquierda */
+        radial-gradient(ellipse 60% 50% at 20% 15%,
+            rgba(91, 18, 104, 0.22) 0%,
+            transparent 60%),
+        /* Mancha dorada abajo-derecha */
+        radial-gradient(ellipse 50% 50% at 80% 85%,
+            rgba(200, 155, 60, 0.16) 0%,
+            transparent 60%);
+}
+
+/* Grid hairline: textura "papel impreso" muy sutil sobre el fondo */
+.sn-grain {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    /* Combinamos grano fractal con grid hairline editorial */
+    opacity: 1;
+    background-image:
+        /* Grid hairline (líneas vertical/horizontal muy claras) */
+        linear-gradient(90deg, rgba(26, 20, 16, 0.025) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(26, 20, 16, 0.025) 1px, transparent 1px),
+        /* Ruido fractal pequeño */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 80px 80px, 80px 80px, 200px 200px;
+    /* Mask para que el grid no se vea en los bordes */
+    -webkit-mask-image: radial-gradient(ellipse 100% 80% at center, black 30%, transparent 95%);
+    mask-image: radial-gradient(ellipse 100% 80% at center, black 30%, transparent 95%);
+    mix-blend-mode: multiply;
+}
+
+/* ============ Container ============ */
+.sn-container {
+    width: 100%;
+    max-width: var(--container-max, 1280px);
+    margin: 0 auto;
+    padding: 0 var(--container-padding, 2rem);
+    position: relative;
+}
+
+/* ============ Header ============ */
+.sn-header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto clamp(4rem, 7vw, 6rem);
+}
+
+.sn-eyebrow {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--sn-gold);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--sn-gold);
+}
+
+.sn-title {
+    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
+    font-weight: 200;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--sn-ink);
+    margin: 0 0 1.2rem;
+}
+
+.sn-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--sn-purple);
+    margin: 0 0.15em;
+}
+
+.sn-lead {
+    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    color: rgba(26, 20, 16, 0.65);
+    line-height: 1.75;
+    max-width: 500px;
+    margin: 0 auto;
+    font-weight: 300;
+}
+
+/* ============================================================
+   STAGE — grid de las dos tarjetas
+   ============================================================ */
+.sn-stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    align-items: center;
+    justify-items: center;
+}
+
+/* Cuando una tarjeta está abierta, atenuamos sutilmente la otra
+   para enfocar la atención. Efecto cinematic. */
+.sn-stage--mision .sn-card--vision:not(.is-open),
+.sn-stage--vision .sn-card--mision:not(.is-open) {
+    opacity: 0.45;
+    transform: scale(0.92);
+}
+
+/* ============================================================
+   CARD — burbuja que se transforma in-situ en tarjeta
+   ============================================================ */
+.sn-card {
+   
+    position: relative;
+    /* Estado cerrado: círculo perfecto. aspect-ratio 1/1 + border-radius 50% */
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    /* Padding generoso para que el contenido respete los bordes curvos */
+    padding: 2rem;
+    border-radius: 50%;
+    background:
+        linear-gradient(145deg,
+            rgba(255, 255, 255, 0.94),
+            rgba(250, 248, 243, 0.82));
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    cursor: pointer;
+    overflow: hidden;
+    /* Transición principal: la forma se morphea fluido. 700ms se siente intencional sin laguear */
+    transition:
+        max-width 0.7s var(--sn-ease),
+        aspect-ratio 0.7s var(--sn-ease),
+        border-radius 0.7s var(--sn-ease),
+        padding 0.7s var(--sn-ease),
+        transform 0.6s var(--sn-ease),
+        opacity 0.6s var(--sn-ease),
+        box-shadow 0.6s var(--sn-ease),
+        background 0.6s ease;
+    box-shadow:
+        0 1px 2px rgba(91, 18, 104, 0.04),
+        0 12px 32px rgba(91, 18, 104, 0.06);
+
+    /* En estado cerrado, contenido centrado verticalmente para que el círculo respire */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Estado abierto: se transforma en rectángulo redondeado generoso.
+   Se vuelve más ancho y menos alto proporcionalmente para que el texto fluya. */
+.sn-card.is-open {
+    max-width: 100%;
+    aspect-ratio: 1.5 / 1;
+    border-radius: 28px;
+    padding: 2.25rem 2.5rem 2rem;
+    justify-content: flex-start;
+    background: linear-gradient(145deg,
+        rgba(255, 255, 255, 0.96),
+        rgba(250, 248, 243, 0.88));
+}
+
+.sn-card:focus-visible {
+    outline: 2px solid var(--sn-gold);
+    outline-offset: 4px;
+}
+
+/* ============================================================
+   BORDE ANIMADO — la "firma visual" de la sección
+   Conic gradient con colores de la paleta CIAM que rota.
+   Usamos ::before en lugar de border porque permite gradient + animation.
+   ============================================================ */
+.sn-card-border {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    /* mask para que solo se vea el borde, no el fondo */
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    /* Gradiente cónico que rota — el truco está acá */
+    background: conic-gradient(
+        from 0deg,
+        rgba(91, 18, 104, 0.15),
+        rgba(200, 155, 60, 0.35) 25%,
+        rgba(91, 18, 104, 0.45) 50%,
+        rgba(200, 155, 60, 0.35) 75%,
+        rgba(91, 18, 104, 0.15) 100%
+    );
+    opacity: 0.4;
+    transition: opacity 0.5s ease;
+}
+
+/* Al hover/open: el borde se enciende e inicia la rotación.
+   Usamos @property + variable CSS animada para que solo cambie el
+   ángulo del gradient (no la posición del elemento). */
+.sn-card.is-open .sn-card-border,
+.sn-card:hover .sn-card-border {
+    opacity: 1;
+    animation: snBorderSpin 6s linear infinite;
+    background: conic-gradient(
+        from var(--sn-angle, 0deg),
+        rgba(91, 18, 104, 0.2),
+        rgba(200, 155, 60, 0.55) 25%,
+        rgba(91, 18, 104, 0.65) 50%,
+        rgba(200, 155, 60, 0.55) 75%,
+        rgba(91, 18, 104, 0.2) 100%
+    );
+}
+
+@property --sn-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes snBorderSpin {
+    to {
+        --sn-angle: 360deg;
+    }
+}
+
+/* ============================================================
+   CONTENIDO INTERNO — body de la tarjeta
+   ============================================================ */
+.sn-card-body {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition:
+        align-items 0.6s var(--sn-ease),
+        text-align 0.6s var(--sn-ease);
+}
+
+/* Al abrir, el contenido se realinea a la izquierda */
+.sn-card.is-open .sn-card-body {
+    align-items: flex-start;
+    text-align: left;
+}
+
+/* Index (01, 02) */
+.sn-card-index {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.32em;
+    color: var(--sn-gold);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    transition:
+        font-size 0.6s var(--sn-ease),
+        margin-bottom 0.6s var(--sn-ease);
+}
+
+.sn-card.is-open .sn-card-index {
+    margin-bottom: 0.8rem;
+}
+
+/* Título grande */
+.sn-card-title {
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    font-weight: 200;
+    letter-spacing: -0.04em;
+    color: var(--sn-purple);
+    line-height: 1;
+    margin: 0;
+    transition:
+        font-size 0.6s var(--sn-ease),
+        color 0.6s ease;
+}
+
+.sn-card.is-open .sn-card-title {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+}
+
+.sn-card--vision .sn-card-title {
+    color: var(--sn-ink);
+}
+.sn-card--vision.is-open .sn-card-title {
+    color: var(--sn-purple);
+}
+
+/* ============================================================
+   GLYPH — composición geométrica conceptual.
+   Misión: diana con trayectoria (objetivo + acción dirigida).
+   Visión: horizonte con sol naciente (lo que se ve más allá).
+   Visible en estado cerrado, se desvanece al abrir la card.
+   ============================================================ */
+.sn-card-glyph {
+    width: clamp(110px, 16vw, 150px);
+    height: clamp(110px, 16vw, 150px);
+    margin-top: 0.75rem;
+    color: var(--sn-purple);
+    transition:
+        opacity 0.4s ease,
+        transform 0.5s var(--sn-ease),
+        margin 0.5s var(--sn-ease),
+        width 0.5s var(--sn-ease),
+        height 0.5s var(--sn-ease),
+        color 0.5s ease;
+    pointer-events: none;
+}
+
+.sn-card-glyph svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* Color dorado para Visión */
+.sn-card--vision .sn-card-glyph {
+    color: var(--sn-gold);
+}
+
+/* Animación lenta al hover en estado CERRADO:
+   - Misión: la diana respira (opacity pulsa)
+   - Visión: los rayos del sol pulsan suavemente */
+.sn-card:not(.is-open):hover .sn-card-glyph {
+    transform: scale(1.04);
+}
+
+.sn-card--mision:not(.is-open):hover .sn-card-glyph circle {
+    animation: snDianaPulse 4s ease-in-out infinite;
+}
+
+@keyframes snDianaPulse {
+    0%, 100% { opacity: var(--ring-opacity, 0.6); }
+    50% { opacity: 0.95; }
+}
+
+.sn-card--vision:not(.is-open):hover .sn-glyph-ray {
+    animation: snRayPulse 2.5s ease-in-out infinite;
+}
+
+.sn-card--vision:not(.is-open):hover .sn-glyph-ray--1 { animation-delay: 0s; }
+.sn-card--vision:not(.is-open):hover .sn-glyph-ray--2 { animation-delay: 0.15s; }
+.sn-card--vision:not(.is-open):hover .sn-glyph-ray--3 { animation-delay: 0.3s; }
+.sn-card--vision:not(.is-open):hover .sn-glyph-ray--4 { animation-delay: 0.45s; }
+.sn-card--vision:not(.is-open):hover .sn-glyph-ray--5 { animation-delay: 0.6s; }
+
+@keyframes snRayPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.9; }
+}
+
+/* Al abrir la card, el glyph se reduce y se desvanece para dar espacio al texto */
+.sn-card.is-open .sn-card-glyph {
+    opacity: 0;
+    transform: scale(0.6);
+    width: 0;
+    height: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* ============================================================
+   REVEAL — el contenido textual que aparece al abrir
+   ============================================================ */
+.sn-card-reveal {
+    width: 100%;
+    margin-top: 0;
+    /* grid-template-rows truco: 0fr -> 1fr permite animar height auto */
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+        grid-template-rows 0.6s var(--sn-ease),
+        opacity 0.4s ease,
+        margin-top 0.6s var(--sn-ease);
+}
+
+.sn-card.is-open .sn-card-reveal {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: 1.5rem;
+    /* Delay para que el reveal empiece DESPUÉS de que el body se realinea */
+    transition:
+        grid-template-rows 0.6s var(--sn-ease) 0.05s,
+        opacity 0.5s ease 0.25s,
+        margin-top 0.6s var(--sn-ease);
+}
+
+/* El contenido interno con overflow hidden para el efecto de expansion */
+.sn-card-reveal > * {
+    overflow: hidden;
+}
+
+/* Línea divisoria sutil */
+.sn-card-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        var(--sn-purple),
+        var(--sn-gold) 50%,
+        transparent
+    );
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.7s var(--sn-ease) 0.15s;
+    margin-bottom: 1.25rem;
+}
+
+.sn-card.is-open .sn-card-divider {
+    transform: scaleX(1);
+}
+
+/* Texto descriptivo */
+.sn-card-text {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: rgba(26, 20, 16, 0.75);
+    font-weight: 300;
+    margin: 0;
+    transform: translateY(8px);
+    opacity: 0;
+    transition:
+        transform 0.5s var(--sn-ease) 0.25s,
+        opacity 0.5s ease 0.3s;
+}
+
+.sn-card.is-open .sn-card-text {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Hint con flecha al final del texto */
+.sn-card-hint {
+    margin-top: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    color: var(--sn-purple);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+        opacity 0.4s ease 0.4s,
+        transform 0.5s var(--sn-ease) 0.4s;
+}
+
+.sn-card.is-open .sn-card-hint {
+    opacity: 0.6;
+    transform: translateY(0);
+}
+
+/* ============================================================
+   TRIGGER — el "+" del estado cerrado (invita a explorar)
+   ============================================================ */
+.sn-card-trigger {
+    position: absolute;
+    top: 1.8rem;
+    right: 1.8rem;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    opacity: 0.4;
+    transition: opacity 0.4s ease, transform 0.5s var(--sn-ease);
+    pointer-events: none;
+}
+
+.sn-card-trigger span {
+    position: absolute;
+    background-color: var(--sn-purple);
+    transition: transform 0.4s var(--sn-ease), opacity 0.3s ease;
+}
+
+/* Línea horizontal del "+" */
+.sn-card-trigger span:nth-child(1) {
+    width: 12px;
+    height: 1px;
+}
+/* Línea vertical del "+" */
+.sn-card-trigger span:nth-child(2) {
+    width: 1px;
+    height: 12px;
+}
+
+.sn-card:hover .sn-card-trigger {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+/* Al abrir: el "+" se convierte en "−" (línea vertical desaparece) */
+.sn-card.is-open .sn-card-trigger {
+    opacity: 0.9;
+    transform: rotate(180deg);
+}
+.sn-card.is-open .sn-card-trigger span:nth-child(2) {
+    opacity: 0;
+    transform: scaleY(0);
+}
+
+/* ============================================================
+   Mobile / Responsive
+   ============================================================ */
+@media (max-width: 968px) {
+    .sn-stage {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .sn-stage--mision .sn-card--vision:not(.is-open),
+    .sn-stage--vision .sn-card--mision:not(.is-open) {
+        opacity: 1;
+        transform: none;
+    }
+
+    /* En mobile las cards son rectángulos redondeados, no círculos.
+       Dos círculos apilados en una columna ocuparían demasiado scroll. */
+    .sn-card {
+        aspect-ratio: auto;
+        min-height: 220px;
+        max-width: 100%;
+        padding: 2rem;
+        border-radius: 28px;
+    }
+
+    .sn-card.is-open {
+        aspect-ratio: auto;
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .sn {
+        padding: 4rem 0;
+    }
+    .sn-card {
+        min-height: 200px;
+        padding: 1.75rem;
+        border-radius: 24px;
+    }
+    .sn-card-trigger {
+        top: 1.25rem;
+        right: 1.25rem;
+    }
+}
+
+/* ============================================================
+   Respeto a usuarios que prefieren menos animación
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .sn-card,
+    .sn-card-body,
+    .sn-card-index,
+    .sn-card-title,
+    .sn-card-reveal,
+    .sn-card-divider,
+    .sn-card-text,
+    .sn-card-hint,
+    .sn-card-trigger,
+    .sn-card-trigger span {
+        transition-duration: 0.1s !important;
+    }
+
+    .sn-card.is-open .sn-card-border,
+    .sn-card:hover .sn-card-border {
+        animation: none;
+    }
+}
+
+.sn-card .sn-card-body {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.sn-card:not(.is-open) .sn-card-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ocultar el título original (h3) en estado cerrado para que no se duplique con el h2 */
+.sn-card:not(.is-open) .sn-card-title {
+    display: none !important;
+}
+
+/* Ocultar el h2 grande cuando la card está abierta */
+.sn-card.is-open .sn-card-bigtitle {
+    display: none;
+}
