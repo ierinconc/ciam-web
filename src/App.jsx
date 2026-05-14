@@ -6,6 +6,11 @@ import ScrollToTop from './components/ScrollToTop'
 import Home from './components/Home'
 import ArticleList from './components/ArticleList'
 import ArticlePage from './components/ArticlePage'
+import Team from './components/Team'
+import Services from './components/Services'
+import Interlocuciones from './components/Interlocuciones'
+import Polifonias from './components/Polifonias'
+import Archivo from './components/Archivo'
 
 function App() {
   return (
@@ -14,14 +19,14 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/servicios" element={<PlaceholderPage title="Servicios" />} />
-          <Route path="/equipo" element={<PlaceholderPage title="Equipo" />} />
+          <Route path="/servicios" element={<Services />} />
+          <Route path="/equipo" element={<Team />} />
           <Route path="/blog" element={<ArticleList />} />
           <Route path="/articulo/:id" element={<ArticlePage />} />
           <Route path="/proyectos/taracea" element={<PlaceholderPage title="Taracea" />} />
-          <Route path="/proyectos/interlocuciones" element={<PlaceholderPage title="Interlocuciones" />} />
-          <Route path="/proyectos/polifonias" element={<PlaceholderPage title="Polifonías" />} />
-          <Route path="/archivo" element={<PlaceholderPage title="Archivo" />} />
+          <Route path="/proyectos/interlocuciones" element={<Interlocuciones />} />
+          <Route path="/proyectos/polifonias" element={<Polifonias />} />
+          <Route path="/archivo" element={<Archivo />} />
         </Routes>
       </main>
       <ScrollToTop />
@@ -30,7 +35,6 @@ function App() {
   )
 }
 
-// Placeholder mientras construimos cada página en los próximos días
 function PlaceholderPage({ title }) {
   return (
     <div style={{

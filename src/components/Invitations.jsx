@@ -55,9 +55,9 @@ function Invitations() {
             <div className="inv-bg-overlay" aria-hidden="true" />
             <div className="inv-container">
                 <header className="inv-header">
-                    <span className="inv-eyebrow">§ 02 · Invitación</span>
+                
                     <h2 id="inv-title" className="inv-title">
-                        Dos puertas para <em>conocernos</em>
+                        Conoce nuestra participación política
                     </h2>
                 </header>
 

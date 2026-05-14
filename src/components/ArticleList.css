@@ -1,5 +1,14 @@
 /* ============================================================
-   BLOG — Lista de publicaciones, estilo editorial premium
+   BLOG — Lista de publicaciones · Patch 16
+   ------------------------------------------------------------
+   Cambios respecto a Patch 15:
+    - Fondo: imagen real /blog-bg.webp + velo blanco radial al centro
+      (centro respira blanco, atmósfera en los bordes).
+    - Header: SIN underline dorado bajo "Blog".
+    - Header: SIN contador "X publicaciones · Desde XXXX".
+    - Ornamento: rediseñado para verse genuinamente centrado y simétrico,
+      más sutil y elegante.
+    - Paper base más claro (menos beige) para que la imagen aporte la calidez.
    ============================================================ */
 
 .blog {
@@ -8,53 +17,84 @@
     --blog-gold: var(--color-gold, #c89b3c);
     --blog-paper: var(--color-paper, #faf8f3);
     --blog-paper-warm: var(--color-paper-warm, #f1ece0);
+    --blog-paper-deep: var(--color-paper-deep, #e8e2d2);
     --blog-ink: var(--color-ink, #1a1410);
+    --blog-ink-soft: var(--color-ink-soft, #3d3530);
+    --blog-ink-muted: var(--color-ink-muted, #7a716a);
     --blog-ease: cubic-bezier(0.22, 1, 0.36, 1);
 
     position: relative;
-    background-color: var(--blog-paper);
-    /* Padding-top GRANDE para no quedar debajo del navbar fijo (h ~80px) */
+    background-color: #ffffff;
     padding: clamp(7rem, 12vw, 10rem) 0 clamp(5rem, 10vw, 7rem);
     min-height: 100vh;
     isolation: isolate;
     overflow-x: clip;
 }
 
-/* ============ Fondo decorativo sutil ============ */
+/* ============================================================
+   FONDO — Imagen real (periódicos + libros, tinte morado)
+   Capa 1: la imagen optimizada (webp, fallback jpg automático en CSS).
+   Capa 2: velo radial blanco para que el CENTRO respire y las cards
+           sean siempre legibles. La imagen se siente solo en los bordes.
+   ============================================================ */
 .blog-bg {
     position: fixed;
     inset: 0;
     z-index: -2;
     pointer-events: none;
-    background-image: url('/articulo-bg.jpg');
+    background-color: var(--blog-paper);
+    background-image: url('/blog-bg.webp');
     background-size: cover;
-    background-position: center;
-    filter: grayscale(0.92) blur(1px) brightness(1.12) contrast(0.90);
-    opacity: 1.2;
-    transform: scale(1.05);
+    background-position: center center;
+    background-repeat: no-repeat;
+    /* fallback para navegadores muy viejos sin webp (~3% global) */
+    background-image: image-set(
+        url('/blog-bg.webp') type('image/webp'),
+        url('/blog-bg.jpg') type('image/jpeg')
+    );
 }
 
-.blog-bg::after {
-    content: '';
+/* Velo radial: blanco MUY denso al centro, transparente a los bordes.
+   Es lo que hace que la imagen quede "asomada" solo a los lados,
+   y el centro respire en blanco como pediste. */
+.blog-bg-veil {
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
     background:
-        radial-gradient(ellipse 120% 90% at center,
-            transparent 0%,
-            rgba(250, 248, 243, 0.55) 75%,
-            rgba(250, 248, 243, 0.88) 100%),
+        /* Velo radial principal: centro blanco, bordes transparentes */
+        radial-gradient(ellipse 75% 80% at 50% 45%,
+            rgba(255, 255, 255, 0.92) 0%,
+            rgba(255, 255, 255, 0.85) 30%,
+            rgba(255, 255, 255, 0.55) 55%,
+            rgba(255, 255, 255, 0.2) 80%,
+            rgba(255, 255, 255, 0) 100%),
+        /* Sutil tinte cálido global (un toque de paper) */
         linear-gradient(180deg,
-            rgba(250, 248, 243, 0.85) 0%,
-            rgba(250, 248, 243, 0.8) 50%,
-            rgba(241, 236, 224, 0.88) 100%),
-        radial-gradient(ellipse 55% 45% at 12% 18%,
-            rgba(91, 18, 104, 0.14) 0%,
-            transparent 60%),
-        radial-gradient(ellipse 50% 40% at 88% 82%,
-            rgba(200, 155, 60, 0.13) 0%,
-            transparent 60%);
+            rgba(250, 248, 243, 0.25) 0%,
+            rgba(250, 248, 243, 0.15) 100%);
+}
+
+/* En mobile, sirve una imagen más liviana */
+@media (max-width: 768px) {
+    .blog-bg {
+        background-image: url('/blog-bg-mobile.webp');
+        background-image: image-set(
+            url('/blog-bg-mobile.webp') type('image/webp'),
+            url('/blog-bg.jpg') type('image/jpeg')
+        );
+    }
+
+    .blog-bg-veil {
+        /* En mobile, el velo es más denso porque la imagen está más recortada */
+        background:
+            radial-gradient(ellipse 110% 85% at 50% 50%,
+                rgba(255, 255, 255, 0.95) 0%,
+                rgba(255, 255, 255, 0.88) 35%,
+                rgba(255, 255, 255, 0.55) 75%,
+                rgba(255, 255, 255, 0.2) 100%);
+    }
 }
 
 .blog-container {
@@ -66,63 +106,111 @@
 }
 
 /* ============================================================
-   HEADER — portada editorial
+   HEADER EDITORIAL
    ============================================================ */
 .blog-header {
     text-align: center;
     max-width: 720px;
-    margin: 0 auto clamp(4rem, 8vw, 6rem);
+    margin: 0 auto clamp(3.5rem, 7vw, 5rem);
     animation: blogFadeUp 1s var(--blog-ease) both;
 }
 
-.blog-eyebrow {
-    display: inline-block;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.32em;
+.blog-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.36em;
     text-transform: uppercase;
     color: var(--blog-gold);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--blog-gold);
+    opacity: 0;
+    animation: blogFadeUp 0.9s var(--blog-ease) 0.1s forwards;
 }
 
+.blog-kicker-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--blog-gold);
+    opacity: 0.85;
+}
+
+.blog-kicker-label {
+    padding-right: 0.05em;
+}
+
+/* Patch 22: Título "Blog" — peso 600 morado, sin italic */
 .blog-title {
     font-family: var(--font-base);
-    font-size: clamp(2.8rem, 7vw, 5.5rem);
-    font-weight: 200;
-    letter-spacing: -0.04em;
+    font-size: clamp(3rem, 7.5vw, 5.8rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
     line-height: 1;
-    color: var(--blog-ink);
-    margin: 0 0 1.5rem;
+    color: var(--blog-purple);
+    margin: 0 0 1.75rem;
+    text-wrap: balance;
 }
 
 .blog-title em {
-    font-style: italic;
-    font-weight: 300;
+    font-style: normal;
+    font-weight: 600;
     color: var(--blog-purple);
-    margin: 0 0.1em;
 }
 
 .blog-lead {
-    font-size: clamp(0.98rem, 1.2vw, 1.1rem);
+    font-size: clamp(1rem, 1.2vw, 1.1rem);
     line-height: 1.75;
-    color: rgba(26, 20, 16, 0.65);
+    color: var(--blog-ink-soft);
+    opacity: 0.85;
     max-width: 540px;
     margin: 0 auto 2.5rem;
     font-weight: 300;
+    text-wrap: balance;
 }
 
-/* Línea hairline morado→dorado debajo del header */
-.blog-hairline {
-    width: 80px;
-    height: 1px;
+/* ============================================================
+   ORNAMENTO CENTRAL — Rediseñado para verse genuinamente centrado
+   Estructura: ───── ◆ ─────
+   Las dos líneas son del MISMO ancho exacto (no flex:1 que descentra).
+   ============================================================ */
+.blog-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
     margin: 0 auto;
-    background: linear-gradient(
-        90deg,
-        var(--blog-purple),
-        var(--blog-gold)
-    );
+    width: fit-content;
+}
+
+.blog-ornament-line {
+    width: 56px;
+    height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.blog-ornament-line--purple {
+    color: var(--blog-purple);
+    opacity: 0.55;
+}
+
+.blog-ornament-line--gold {
+    color: var(--blog-gold);
+    opacity: 0.7;
+}
+
+.blog-ornament-diamond {
+    width: 5px;
+    height: 5px;
+    transform: rotate(45deg);
+    background: linear-gradient(135deg,
+        var(--blog-purple) 0%,
+        var(--blog-purple) 50%,
+        var(--blog-gold) 50%,
+        var(--blog-gold) 100%);
+    flex-shrink: 0;
 }
 
 @keyframes blogFadeUp {
@@ -130,8 +218,13 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes blogFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 /* ============================================================
-   LIST — la lista de artículos
+   LIST
    ============================================================ */
 .blog-list {
     list-style: none;
@@ -142,29 +235,7 @@
     gap: 1.25rem;
 }
 
-/* ============================================================
-   ITEM — cada artículo
-   ============================================================ */
-.blog-item {
-    position: relative;
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    align-items: stretch;
-    gap: clamp(1.5rem, 3vw, 2.5rem);
-    padding: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.6);
-    border-radius: 20px;
-    cursor: pointer;
-    overflow: hidden;
-    isolation: isolate;
-    transition:
-        background-color 0.5s ease,
-        transform 0.5s var(--blog-ease),
-        box-shadow 0.5s var(--blog-ease);
-    box-shadow:
-        0 1px 2px rgba(91, 18, 104, 0.03),
-        0 6px 20px rgba(91, 18, 104, 0.04);
-    /* Animación de entrada con stagger */
+.blog-item-wrap {
     opacity: 0;
     transform: translateY(20px);
     animation: blogItemIn 0.7s var(--blog-ease) var(--blog-delay, 0ms) forwards;
@@ -177,48 +248,48 @@
     }
 }
 
+/* ============================================================
+   ITEM — cards intactas
+   ============================================================ */
+.blog-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    align-items: stretch;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    padding: 1.5rem;
+    background-color: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border-radius: 20px;
+    cursor: pointer;
+    overflow: hidden;
+    isolation: isolate;
+    color: inherit;
+    text-decoration: none;
+    transition:
+        background-color 0.5s ease,
+        transform 0.5s var(--blog-ease),
+        box-shadow 0.5s var(--blog-ease);
+    box-shadow:
+        0 1px 2px rgba(91, 18, 104, 0.03),
+        0 6px 20px rgba(91, 18, 104, 0.05);
+}
+
 .blog-item:focus-visible {
     outline: 2px solid var(--blog-gold);
     outline-offset: 4px;
 }
 
 .blog-item:hover {
-    background-color: rgba(255, 255, 255, 0.92);
+    background-color: rgba(255, 255, 255, 0.98);
     transform: translateY(-3px);
     box-shadow:
-        0 4px 12px rgba(91, 18, 104, 0.05),
-        0 24px 48px rgba(91, 18, 104, 0.08);
+        0 4px 12px rgba(91, 18, 104, 0.06),
+        0 24px 48px rgba(91, 18, 104, 0.1);
 }
 
-/* ============ Número decorativo a la izquierda ============ */
-.blog-item-num {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 50px;
-    font-size: clamp(2.5rem, 4vw, 3.5rem);
-    font-weight: 100;
-    letter-spacing: -0.05em;
-    line-height: 1;
-    color: var(--blog-purple);
-    opacity: 0.18;
-    font-variant-numeric: tabular-nums;
-    transition:
-        opacity 0.5s ease,
-        color 0.5s ease,
-        transform 0.6s var(--blog-ease);
-}
-
-.blog-item:hover .blog-item-num {
-    opacity: 0.95;
-    color: var(--blog-gold);
-    transform: translateX(2px);
-}
-
-/* ============================================================
-   MEDIA — imagen cuadrada con object-fit cover
-   AQUÍ ESTÁ EL FIX: aspect-ratio 1/1 + object-fit cover
-   ============================================================ */
+/* ============ MEDIA ============ */
 .blog-item-media {
     position: relative;
     width: 220px;
@@ -232,11 +303,8 @@
 .blog-item-img {
     width: 100%;
     height: 100%;
-    /* CLAVE: object-fit cover hace que la imagen llene el cuadrado sin importar
-       el aspect ratio original. Las que sean rectangulares se centran y recortan. */
     object-fit: cover;
     object-position: center;
-    /* Estado base: ligeramente desaturada */
     filter: grayscale(0.25) contrast(1.03);
     transform: scale(1.02);
     transition:
@@ -252,7 +320,6 @@
             var(--blog-paper-deep) 100%);
 }
 
-/* Tint morado MUY sutil sobre la imagen en estado base */
 .blog-item-tint {
     position: absolute;
     inset: 0;
@@ -267,7 +334,6 @@
     opacity: 1;
 }
 
-/* Al hover: la imagen recobra color y zoom sutil, el tint se desvanece */
 .blog-item:hover .blog-item-img {
     filter: grayscale(0) contrast(1);
     transform: scale(1.08);
@@ -277,9 +343,7 @@
     opacity: 0.3;
 }
 
-/* ============================================================
-   BODY — texto del artículo
-   ============================================================ */
+/* ============ BODY ============ */
 .blog-item-body {
     display: flex;
     flex-direction: column;
@@ -346,7 +410,6 @@
     color: rgba(26, 20, 16, 0.6);
     margin: 0;
     font-weight: 400;
-    /* Limitar a 3 líneas para que todos los items tengan altura uniforme */
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
@@ -359,7 +422,7 @@
     color: rgba(26, 20, 16, 0.82);
 }
 
-/* ============ CTA "Leer artículo" ============ */
+/* ============ CTA ============ */
 .blog-item-cta {
     margin-top: 0.4rem;
     display: inline-flex;
@@ -389,10 +452,7 @@
     transform: translateX(2px);
 }
 
-/* ============================================================
-   LÍNEA INFERIOR ANIMADA — el detalle premium
-   Aparece al hover, cruza la card de izquierda a derecha en morado→dorado
-   ============================================================ */
+/* ============ Línea inferior animada ============ */
 .blog-item-line {
     position: absolute;
     bottom: 0;
@@ -419,10 +479,24 @@
    ============================================================ */
 .blog-loading {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    gap: 0.6rem;
+    justify-content: center;
+    gap: 1.5rem;
     padding: 4rem 0;
+}
+
+.blog-loading-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--blog-ink-muted);
+}
+
+.blog-loading-dots {
+    display: flex;
+    gap: 0.6rem;
 }
 
 .blog-loading-dot {
@@ -450,9 +524,24 @@
 
 .blog-empty {
     text-align: center;
-    padding: 4rem 0;
-    color: var(--blog-ink);
-    opacity: 0.6;
+    padding: 4rem 1rem;
+    color: var(--blog-ink-soft);
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.blog-empty p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--blog-ink-soft);
+    margin: 0;
+}
+
+.blog-empty-hint {
+    margin-top: 0.5rem !important;
+    font-size: 0.85rem !important;
+    color: var(--blog-ink-muted) !important;
+    opacity: 0.85;
 }
 
 /* ============================================================
@@ -475,6 +564,21 @@
 }
 
 @media (max-width: 640px) {
+    .blog-header {
+        margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
+    }
+
+    .blog-kicker {
+        font-size: 0.62rem;
+        letter-spacing: 0.32em;
+        gap: 0.65rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .blog-ornament-line {
+        width: 42px;
+    }
+
     .blog-item {
         grid-template-columns: 1fr;
         gap: 1rem;
@@ -497,14 +601,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    .blog-item-wrap,
+    .blog-header,
+    .blog-kicker,
     .blog-item,
     .blog-item *,
     .blog-loading-dot {
         animation: none !important;
         transition-duration: 0.1s !important;
     }
-    .blog-item {
+    .blog-item-wrap {
         opacity: 1;
         transform: none;
+    }
+    .blog-header,
+    .blog-kicker {
+        opacity: 1;
     }
 }

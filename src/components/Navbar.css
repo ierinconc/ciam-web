@@ -1,5 +1,10 @@
 /* ============================================================
    Navbar — transiciones fluidas, encoge al scroll, acento dorado
+   ------------------------------------------------------------
+   Patch 20: reducción sutil del grosor (~14%)
+    - padding transparente: 1.4rem → 1.2rem
+    - padding sólido (scroll): 0.9rem → 0.7rem
+    - altura del logo: 64px → 58px
    ============================================================ */
 
 .navbar {
@@ -22,7 +27,7 @@
 .navbar-inner {
     max-width: var(--container-max);
     margin: 0 auto;
-    padding: 1.4rem var(--container-padding);
+    padding: 1.2rem var(--container-padding);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -55,8 +60,8 @@
     box-shadow: 0 1px 0 rgba(200, 155, 60, 0.08), 0 6px 24px rgba(26, 20, 16, 0.04);
 }
 .navbar--solid .navbar-inner {
-    padding-top: 0.9rem;
-    padding-bottom: 0.9rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
 }
 .navbar--solid .navbar-links > li,
 .navbar--solid .navbar-dropdown > span {
@@ -73,7 +78,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    height: 64px;
+    height: 58px;
     cursor: pointer;
     flex-shrink: 0;
 }
@@ -198,7 +203,9 @@
     color: var(--color-gold);
 }
 
-/* ===== Toggle móvil ===== */
+/* ===== Toggle móvil =====
+   Patch 23 fix: z-index 1001 para quedar por encima del overlay (1000)
+   y mantenerse siempre clickeable como X cuando el menú está abierto. */
 .navbar-toggle {
     display: none;
     flex-direction: column;
@@ -208,7 +215,8 @@
     width: 36px;
     align-items: center;
     justify-content: center;
-    z-index: 102;
+    z-index: 1001;
+    position: relative;
 }
 
 .navbar-toggle span {
@@ -229,7 +237,11 @@
     transform: translateY(-6.5px) rotate(-45deg);
 }
 
-/* ===== Menú móvil overlay ===== */
+/* ===== Menú móvil overlay =====
+   Patch 23 fix: z-index 1000 (por encima del navbar fijo) para que cubra
+   completamente el navbar cuando se abre, en cualquier estado (transparent
+   o solid). El navbar-toggle salta a z-index 1001 para seguir clickeable.
+   Padding-top alineado con el navbar reducido del Patch 20 (~72-80px). */
 .navbar-mobile {
     position: fixed;
     top: 0;
@@ -237,8 +249,8 @@
     right: 0;
     bottom: 0;
     background-color: var(--color-paper);
-    z-index: 101;
-    padding: 6rem 2rem 3rem;
+    z-index: 1000;
+    padding: clamp(5.5rem, 14vw, 7rem) 2rem 3rem;
     overflow-y: auto;
     opacity: 0;
     visibility: hidden;
@@ -310,8 +322,8 @@
         display: flex;
     }
     .navbar-inner {
-        padding-top: 0.9rem;
-        padding-bottom: 0.9rem;
+        padding-top: 0.7rem;
+        padding-bottom: 0.7rem;
     }
     .navbar--mobile-open {
         background-color: var(--color-paper);
@@ -321,4 +333,79 @@
     .navbar--mobile-open .navbar-toggle span {
         background-color: var(--color-ink);
     }
+
+    /* ============================================================
+       PATCH 23 — Fix del menú móvil
+       ------------------------------------------------------------
+       Cuando el menú está abierto, eliminamos cualquier rastro
+       visual del navbar fijo encima del overlay: sin fondo crema,
+       sin borde dorado inferior, sin sombra. Así el menú queda
+       limpio y los enlaces (especialmente "Inicio") nunca quedan
+       tapados, independientemente del estado scrolled.
+       Solo conservamos el botón X (toggle) visible y clickeable
+       en su posición original arriba a la derecha.
+       ============================================================ */
+    .navbar--mobile-open {
+        background-color: transparent !important;
+        border-bottom-color: transparent !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    /* El logo se oculta cuando el menú está abierto — es redundante
+       porque el menú ya cubre toda la pantalla y deja el X arriba. */
+    .navbar--mobile-open .navbar-logo {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+/* ============================================================
+   PATCH 22 — Pill "Próximamente" para Polifonías
+   ------------------------------------------------------------
+   Item del submenu donde Polifonías indica que está en construcción.
+   Sutil pero claro: pill dorada chiquita al lado del nombre.
+   ============================================================ */
+
+/* Desktop: item con pill alineada a la derecha */
+.navbar-submenu-item--soon {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-right: 1rem !important;
+}
+
+/* Mobile: pill al lado del nombre */
+.navbar-mobile-item--soon {
+    display: flex !important;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* La pill propiamente — dorada, uppercase, muy chiquita */
+.navbar-soon-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.18rem 0.55rem;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    background: rgba(200, 155, 60, 0.1);
+    border: 1px solid rgba(200, 155, 60, 0.45);
+    border-radius: 999px;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* En hover del item entero, la pill también se ilumina */
+.navbar-submenu li:hover .navbar-soon-pill,
+.navbar-mobile-group ul li:hover .navbar-soon-pill {
+    background: rgba(200, 155, 60, 0.18);
+    border-color: var(--color-gold);
 }

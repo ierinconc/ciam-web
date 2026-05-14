@@ -30,12 +30,14 @@
     background-size: cover;
     background-position: center;
     filter: grayscale(0.95) blur(2px) brightness(1.1) contrast(0.92);
-    opacity: 0.28;
+    /* Patch 24: subimos opacity y reducimos blur para que se note un poco más */
+    opacity: 0.42;
     transform: scale(1.05);
     pointer-events: none;
 }
 
-/* Capa de overlay (vignette + manchas) sobre la imagen */
+/* Capa de overlay (vignette + manchas) sobre la imagen
+   Patch 24: rebajamos cada capa crema ~12-15% para que la foto respire. */
 .inv .inv-bg-overlay {
     position: absolute;
     inset: 0;
@@ -44,12 +46,12 @@
     background:
         radial-gradient(ellipse 120% 90% at center,
             transparent 0%,
-            rgba(250, 248, 243, 0.5) 75%,
-            rgba(250, 248, 243, 0.85) 100%),
+            rgba(250, 248, 243, 0.4) 75%,
+            rgba(250, 248, 243, 0.7) 100%),
         linear-gradient(180deg,
-            rgba(250, 248, 243, 0.82) 0%,
-            rgba(250, 248, 243, 0.78) 50%,
-            rgba(241, 236, 224, 0.85) 100%),
+            rgba(250, 248, 243, 0.7) 0%,
+            rgba(250, 248, 243, 0.65) 50%,
+            rgba(241, 236, 224, 0.72) 100%),
         radial-gradient(ellipse 50% 40% at 15% 25%,
             rgba(91, 18, 104, 0.14) 0%,
             transparent 60%),
@@ -118,17 +120,19 @@
 }
 
 .inv-title {
-    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
-    font-weight: 200;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    color: var(--inv-ink);
+    font-size: clamp(2.4rem, 5.5vw, 4.6rem);
+    /* Patch 22: peso 600 morado, sin italic */
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    color: var(--inv-purple);
     margin: 0;
+    text-wrap: balance;
 }
 
 .inv-title em {
-    font-style: italic;
-    font-weight: 300;
+    font-style: normal;
+    font-weight: 600;
     color: var(--inv-purple);
 }
 

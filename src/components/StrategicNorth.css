@@ -70,7 +70,8 @@
     background-size: cover;
     background-position: center 40%;
     filter: grayscale(0.92) brightness(1.05) contrast(0.95);
-    opacity: 0.42;
+    /* Patch 24: subimos opacity para que la foto se note más */
+    opacity: 0.55;
 }
 
 /* Overlay principal: gradiente diagonal con manchas radiales suaves */
@@ -82,13 +83,14 @@
         /* Vignette en las esquinas para concentrar la atención al centro */
         radial-gradient(ellipse 120% 80% at center,
             transparent 0%,
-            rgba(241, 236, 224, 0.35) 80%,
-            rgba(241, 236, 224, 0.65) 100%),
-        /* Capa de color: la base crema, pero ligeramente direccional */
+            rgba(241, 236, 224, 0.25) 80%,
+            rgba(241, 236, 224, 0.5) 100%),
+        /* Capa de color: la base crema, pero ligeramente direccional.
+           Patch 24: rebajamos cada capa ~10% para que la imagen respire. */
         linear-gradient(135deg,
-            rgba(250, 248, 243, 0.78) 0%,
-            rgba(250, 248, 243, 0.85) 50%,
-            rgba(241, 236, 224, 0.9) 100%),
+            rgba(250, 248, 243, 0.62) 0%,
+            rgba(250, 248, 243, 0.7) 50%,
+            rgba(241, 236, 224, 0.76) 100%),
         /* Mancha morada arriba-izquierda */
         radial-gradient(ellipse 60% 50% at 20% 15%,
             rgba(91, 18, 104, 0.22) 0%,
@@ -149,19 +151,20 @@
 }
 
 .sn-title {
-    font-size: clamp(2.4rem, 5.5vw, 4.5rem);
-    font-weight: 200;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    color: var(--sn-ink);
+    font-size: clamp(2.6rem, 6vw, 4.8rem);
+    /* Patch 22: peso 600 morado en línea con el resto del sitio */
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    color: var(--sn-purple);
     margin: 0 0 1.2rem;
 }
 
+/* Sin italic — selector conservado por si vuelven a usar <em> */
 .sn-title em {
-    font-style: italic;
-    font-weight: 300;
+    font-style: normal;
+    font-weight: 600;
     color: var(--sn-purple);
-    margin: 0 0.15em;
 }
 
 .sn-lead {
@@ -389,7 +392,7 @@
 .sn-card-glyph {
     width: clamp(110px, 16vw, 150px);
     height: clamp(110px, 16vw, 150px);
-    margin-top: 0.75rem;
+    margin-top: 0;
     color: var(--sn-purple);
     transition:
         opacity 0.4s ease,
@@ -593,6 +596,8 @@
    Mobile / Responsive
    ============================================================ */
 @media (max-width: 968px) {
+    
+
     .sn-stage {
         grid-template-columns: 1fr;
         gap: 1.25rem;
@@ -607,16 +612,17 @@
     /* En mobile las cards son rectángulos redondeados, no círculos.
        Dos círculos apilados en una columna ocuparían demasiado scroll. */
     .sn-card {
-        aspect-ratio: auto;
-        min-height: 220px;
-        max-width: 100%;
-        padding: 2rem;
-        border-radius: 28px;
+    aspect-ratio: auto;
+    height: 320px;
+    max-width: 100%;
+    padding: 2rem;
+    border-radius: 28px;
     }
 
     .sn-card.is-open {
         aspect-ratio: auto;
         padding: 2rem;
+        min-height: 300px;
     }
 }
 
@@ -679,4 +685,14 @@
 /* Ocultar el h2 grande cuando la card está abierta */
 .sn-card.is-open .sn-card-bigtitle {
     display: none;
+}
+
+/* Título grande arriba del símbolo en estado cerrado */
+.sn-card-bigtitle {
+    font-size: clamp(2.2rem, 7vw, 2.8rem);
+    font-weight: 200;
+    color: var(--sn-purple);
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem 0;
+    transition: opacity 0.4s ease;
 }

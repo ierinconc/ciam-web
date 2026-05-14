@@ -75,7 +75,15 @@ function Navbar() {
                             <li onClick={() => go('/blog')}>Blog</li>
                             <li onClick={() => go('/proyectos/taracea')}>Taracea</li>
                             <li onClick={() => go('/proyectos/interlocuciones')}>Interlocuciones</li>
-                            <li onClick={() => go('/proyectos/polifonias')}>Polifonías</li>
+                            <li
+                                onClick={() => go('/proyectos/polifonias')}
+                                className="navbar-submenu-item--soon"
+                            >
+                                <span>Polifonías</span>
+                                <span className="navbar-soon-pill" aria-label="Próximamente">
+                                    Próximamente
+                                </span>
+                            </li>
                         </ul>
                     </li>
                     <li onClick={() => go('/archivo')}>Archivo</li>
@@ -105,7 +113,15 @@ function Navbar() {
                             <li onClick={() => go('/blog')}>Blog</li>
                             <li onClick={() => go('/proyectos/taracea')}>Taracea</li>
                             <li onClick={() => go('/proyectos/interlocuciones')}>Interlocuciones</li>
-                            <li onClick={() => go('/proyectos/polifonias')}>Polifonías</li>
+                            <li
+                                onClick={() => go('/proyectos/polifonias')}
+                                className="navbar-mobile-item--soon"
+                            >
+                                <span>Polifonías</span>
+                                <span className="navbar-soon-pill" aria-label="Próximamente">
+                                    Próximamente
+                                </span>
+                            </li>
                         </ul>
                     </li>
                     <li onClick={() => go('/archivo')}>Archivo</li>

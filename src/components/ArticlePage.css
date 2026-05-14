@@ -1,127 +1,1258 @@
 /* ============================================================
-   ARTICLE WRAPPER — fondo atmosférico (libros desaturados + overlays)
+   ARTICLE PAGE — Detalle de publicación · Patch 16
+   ------------------------------------------------------------
+   Cambios respecto a Patch 15:
+    - Fondo: misma imagen /blog-bg.webp que el blog, con velo más denso
+      al centro (variante "reader" — favorece lectura).
+    - Título h1 ahora en MORADO (no tinta negra).
+    - SIN bloque .ap-author (avatar, "Por", nombre) en el header.
+    - Subtítulos h2/h3/h4 en MORADO.
+    - Párrafos más anchos: contenedor 880px, párrafos ~78ch.
    ============================================================ */
-.article-wrapper {
+
+.ap {
+    --ap-purple: var(--color-accent, #5b1268);
+    --ap-purple-deep: var(--color-accent-deep, #3d0a47);
+    --ap-purple-soft: rgba(91, 18, 104, 0.08);
+    --ap-gold: var(--color-gold, #c89b3c);
+    --ap-paper: var(--color-paper, #faf8f3);
+    --ap-paper-warm: var(--color-paper-warm, #f1ece0);
+    --ap-paper-deep: var(--color-paper-deep, #e8e2d2);
+    --ap-ink: var(--color-ink, #1a1410);
+    --ap-ink-soft: var(--color-ink-soft, #3d3530);
+    --ap-ink-muted: var(--color-ink-muted, #7a716a);
+    --ap-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
     position: relative;
+    background-color: #ffffff;
+    padding: clamp(6rem, 11vw, 9rem) 0 clamp(4rem, 9vw, 6rem);
     min-height: 100vh;
     isolation: isolate;
     overflow-x: clip;
-    /* Padding-top para no quedar debajo del navbar fijo */
-    padding-top: clamp(5rem, 8vw, 6rem);
 }
 
-.article-bg {
+/* ============================================================
+   FONDO — Misma imagen que el blog, velo más denso (reader)
+   ============================================================ */
+.ap-bg {
     position: fixed;
     inset: 0;
     z-index: -2;
-    background-image: url('/articulo-bg.jpg');
+    pointer-events: none;
+    background-color: var(--ap-paper);
+    background-image: url('/blog-bg.webp');
     background-size: cover;
-    background-position: center;
-    filter: grayscale(0.92) blur(3px) brightness(1.12) contrast(0.92);
-    opacity: 1;
-    transform: scale(1.05);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-image: image-set(
+        url('/blog-bg.webp') type('image/webp'),
+        url('/blog-bg.jpg') type('image/jpeg')
+    );
 }
 
-.article-bg-overlay {
+/* Velo MÁS DENSO que el del blog — para no distraer al leer.
+   Centro casi opaco blanco, atmósfera apenas insinuada en los bordes. */
+.ap-bg-veil {
     position: fixed;
     inset: 0;
     z-index: -1;
     pointer-events: none;
     background:
-        /* Vignette claro */
-        radial-gradient(ellipse 120% 90% at center,
-            transparent 0%,
-            rgba(250, 248, 243, 0.55) 75%,
-            rgba(250, 248, 243, 0.88) 100%),
-        /* Capa base crema que vela la foto */
+        radial-gradient(ellipse 80% 90% at 50% 45%,
+            rgba(255, 255, 255, 0.97) 0%,
+            rgba(255, 255, 255, 0.93) 35%,
+            rgba(255, 255, 255, 0.75) 60%,
+            rgba(255, 255, 255, 0.4) 85%,
+            rgba(255, 255, 255, 0.15) 100%),
         linear-gradient(180deg,
-            rgba(250, 248, 243, 0.85) 0%,
-            rgba(250, 248, 243, 0.8) 50%,
-            rgba(241, 236, 224, 0.88) 100%),
-        /* Mancha morada arriba-izquierda */
-        radial-gradient(ellipse 55% 45% at 12% 18%,
-            rgba(91, 18, 104, 0.14) 0%,
-            transparent 60%),
-        /* Mancha dorada abajo-derecha */
-        radial-gradient(ellipse 50% 40% at 88% 82%,
-            rgba(200, 155, 60, 0.13) 0%,
-            transparent 60%);
+            rgba(250, 248, 243, 0.3) 0%,
+            rgba(250, 248, 243, 0.2) 100%);
 }
 
-.article-page{
-    max-width: 900px;
-    margin: 60px auto;
-    padding: 0 24px;
+@media (max-width: 768px) {
+    .ap-bg {
+        background-image: url('/blog-bg-mobile.webp');
+        background-image: image-set(
+            url('/blog-bg-mobile.webp') type('image/webp'),
+            url('/blog-bg.jpg') type('image/jpeg')
+        );
+    }
+
+    .ap-bg-veil {
+        background:
+            radial-gradient(ellipse 120% 95% at 50% 50%,
+                rgba(255, 255, 255, 0.97) 0%,
+                rgba(255, 255, 255, 0.92) 40%,
+                rgba(255, 255, 255, 0.65) 80%,
+                rgba(255, 255, 255, 0.25) 100%);
+    }
+}
+
+/* ============================================================
+   READING PROGRESS BAR
+   ============================================================ */
+.ap-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: transparent;
+    z-index: 50;
+    pointer-events: none;
+}
+
+.ap-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ap-purple), var(--ap-gold));
+    width: 0;
+    transition: width 0.1s linear;
+}
+
+/* ============================================================
+   Contenedor — Ahora más ancho (880px vs 760px del Patch 15)
+   ============================================================ */
+.ap-container {
+    width: 100%;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 var(--container-padding, 2rem);
     position: relative;
 }
 
-.article-page h1{
-    
-    font-size: 56px;
+/* ============================================================
+   VOLVER AL BLOG
+   ============================================================ */
+.ap-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ap-ink-muted);
+    text-decoration: none;
+    transition: color 0.4s ease, gap 0.4s var(--ap-ease);
+    animation: apFadeIn 0.7s var(--ap-ease) 0s both;
+}
+
+.ap-back svg {
+    transition: transform 0.4s var(--ap-ease);
+}
+
+.ap-back:hover {
+    color: var(--ap-purple);
+    gap: 0.9rem;
+}
+
+.ap-back:hover svg {
+    transform: translateX(-3px);
+}
+
+.ap-back:focus-visible {
+    outline: 2px solid var(--ap-gold);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+/* ============================================================
+   HEADER del artículo
+   ============================================================ */
+.ap-header {
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+    animation: apFadeUp 0.9s var(--ap-ease) 0.1s both;
+}
+
+.ap-eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 1.75rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ap-ink-muted);
+}
+
+.ap-eyebrow-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--ap-gold);
+}
+
+.ap-eyebrow-cat {
+    color: var(--ap-purple);
     font-weight: 700;
-    max-width: 760px;
-    line-height: 1.2;
-    color: #63147d;
-    margin-bottom: 24px;
-    text-transform: uppercase;
 }
 
-
-.article-meta {
-    font-size: 14px;
-    color: #63147d;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid #c8c0b0;
+.ap-eyebrow-sep {
+    opacity: 0.5;
+    font-weight: 400;
 }
 
-.article-body{
-    
-    font-size: 18px;
-    line-height: 1.5;
-    color: #2a2a2a;
+/* TÍTULO H1: ahora en MORADO, sentence-case, peso 300 */
+.ap-title {
+    font-family: var(--font-base);
+    font-size: clamp(2.2rem, 5.2vw, 3.6rem);
+    font-weight: 300;
+    letter-spacing: -0.022em;
+    line-height: 1.1;
+    color: var(--ap-purple);
+    margin: 0 0 1.5rem;
+    text-wrap: balance;
 }
 
-
-
-.article-body h4 {
-    color: #63147d;
-    font-size: 20px;
-    margin-top: 2rem;
-    margin-bottom: 0px;
+.ap-title em,
+.ap-title i {
+    font-style: italic;
+    color: var(--ap-purple-deep);
 }
 
-.article-body p{
-    margin-bottom: 10px;
+.ap-hairline {
+    height: 1px;
+    width: 80px;
+    background: linear-gradient(90deg, var(--ap-purple), var(--ap-gold));
+    margin: 1.75rem 0 0;
 }
 
-.back-button {
-    display: inline-block;
-    margin-bottom: 32px;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #6a0dad;
-    cursor: pointer;
-    border-bottom: 1px solid #6a0dad;
-    padding-bottom: 2px;
+/* ============================================================
+   IMAGEN FEATURED
+   ============================================================ */
+.ap-featured {
+    margin: 0 0 clamp(2.5rem, 5vw, 3.5rem);
+    animation: apFadeUp 0.9s var(--ap-ease) 0.2s both;
 }
 
-.back-button:hover{
-    color: #4a0080;
-}
-
-.article-image{
-
-    width: 100%;
-    max-width: 900px;
-    height: 450px;
-    object-fit: cover;
+.ap-featured-frame {
+    position: relative;
     border-radius: 4px;
-    margin-bottom: 2rem;
-    
-    
+    overflow: hidden;
+    background-color: var(--ap-paper-warm);
+    box-shadow:
+        0 1px 2px rgba(91, 18, 104, 0.04),
+        0 18px 48px rgba(91, 18, 104, 0.1);
 }
 
+.ap-featured-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.ap-featured-caption {
+    margin-top: 0.85rem;
+    font-size: 0.82rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ap-ink-muted);
+    text-align: center;
+    padding: 0 1rem;
+}
+
+/* ============================================================
+   CUERPO — tipografía editorial seria, párrafos MÁS ANCHOS
+   ============================================================ */
+.ap-body {
+    font-family: var(--font-base);
+    font-size: 1.0625rem;
+    line-height: 1.78;
+    color: var(--ap-ink-soft);
+    font-weight: 400;
+    animation: apFadeIn 1s var(--ap-ease) 0.3s both;
+}
+
+/* Párrafos ahora ~78ch (~750px) en vez de 65ch (~625px).
+   Llena mejor el ancho del contenedor sin perder legibilidad. */
+.ap-body > * {
+    max-width: 78ch;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ap-body > *:first-child {
+    margin-top: 0;
+}
+
+/* ============ Párrafos ============ */
+.ap-body p {
+    margin: 0 auto 1.35em;
+}
+
+/* Drop cap en el primer párrafo, desktop only */
+@media (min-width: 768px) {
+    .ap-body > p:first-of-type::first-letter {
+        font-family: var(--font-base);
+        float: left;
+        font-size: 4.6rem;
+        line-height: 0.92;
+        font-weight: 300;
+        color: var(--ap-purple);
+        padding: 0.3rem 0.65rem 0 0;
+        margin-top: 0.1rem;
+        font-style: normal;
+    }
+}
+
+/* ============ Headings dentro del artículo — todos en MORADO ============ */
+.ap-body h1,
+.ap-body h2,
+.ap-body h3,
+.ap-body h4,
+.ap-body h5,
+.ap-body h6 {
+    font-family: var(--font-base);
+    color: var(--ap-purple);
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    margin: 2.4em auto 0.8em;
+    font-weight: 400;
+}
+
+.ap-body h2 {
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: var(--ap-purple);
+    margin-top: 2.6em;
+    padding-top: 1.5em;
+    position: relative;
+}
+
+.ap-body h2::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 1px;
+    background-color: var(--ap-gold);
+    opacity: 0.6;
+}
+
+.ap-body h3 {
+    font-size: 1.35rem;
+    color: var(--ap-purple);
+    font-weight: 500;
+}
+
+.ap-body h4 {
+    font-size: 1.125rem;
+    color: var(--ap-purple);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.ap-body h5,
+.ap-body h6 {
+    font-size: 1rem;
+    color: var(--ap-purple);
+    font-weight: 600;
+}
+
+/* ============ Enlaces ============ */
+.ap-body a {
+    color: var(--ap-purple);
+    text-decoration: none;
+    background-image: linear-gradient(90deg, var(--ap-purple), var(--ap-gold));
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    background-size: 100% 1px;
+    padding-bottom: 0.08em;
+    transition: color 0.4s ease, background-size 0.4s var(--ap-ease);
+}
+
+.ap-body a:hover {
+    color: var(--ap-purple-deep);
+    background-size: 100% 2px;
+}
+
+/* ============ Énfasis ============ */
+.ap-body strong,
+.ap-body b {
+    font-weight: 600;
+    color: var(--ap-ink);
+}
+
+.ap-body em,
+.ap-body i {
+    font-style: italic;
+    color: var(--ap-ink);
+}
+
+/* ============ Listas ============ */
+.ap-body ul,
+.ap-body ol {
+    margin: 0 auto 1.35em;
+    padding-left: 1.5em;
+}
+
+.ap-body ul {
+    list-style: none;
+    padding-left: 1.75em;
+}
+
+.ap-body ul li {
+    position: relative;
+    margin-bottom: 0.55em;
+}
+
+.ap-body ul li::before {
+    content: '';
+    position: absolute;
+    top: 0.72em;
+    left: -1.2em;
+    width: 5px;
+    height: 5px;
+    background-color: var(--ap-gold);
+    border-radius: 50%;
+}
+
+.ap-body ol {
+    list-style: none;
+    counter-reset: ap-counter;
+    padding-left: 2em;
+}
+
+.ap-body ol li {
+    position: relative;
+    margin-bottom: 0.55em;
+    counter-increment: ap-counter;
+}
+
+.ap-body ol li::before {
+    content: counter(ap-counter, decimal-leading-zero);
+    position: absolute;
+    left: -2.2em;
+    top: 0.05em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ap-gold);
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+}
+
+.ap-body li > ul,
+.ap-body li > ol {
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+}
+
+/* ============ Blockquote ============ */
+.ap-body blockquote {
+    position: relative;
+    margin: 2.2em auto;
+    padding: 0.4em 0 0.4em 1.75rem;
+    border-left: 2px solid var(--ap-gold);
+    font-size: 1.18rem;
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--ap-ink);
+    max-width: 70ch;
+}
+
+.ap-body blockquote::before {
+    content: '“';
+    position: absolute;
+    top: -0.5em;
+    left: 0.5em;
+    font-size: 3.2rem;
+    line-height: 1;
+    color: var(--ap-purple);
+    opacity: 0.18;
+    font-family: 'Georgia', serif;
+    font-style: normal;
+    pointer-events: none;
+}
+
+.ap-body blockquote p {
+    margin-bottom: 0.6em;
+}
+
+.ap-body blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.ap-body blockquote cite {
+    display: block;
+    margin-top: 0.6em;
+    font-size: 0.82rem;
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ap-ink-muted);
+}
+
+/* ============ Figuras ============ */
+.ap-body figure {
+    margin: 2.4em auto;
+    max-width: 860px;
+}
+
+.ap-body figure img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    box-shadow:
+        0 1px 2px rgba(91, 18, 104, 0.04),
+        0 12px 32px rgba(91, 18, 104, 0.08);
+}
+
+.ap-body figcaption {
+    margin-top: 0.75em;
+    font-size: 0.82rem;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--ap-ink-muted);
+    text-align: center;
+    padding: 0 1rem;
+}
+
+/* ============ HR ornamental ============ */
+.ap-body hr {
+    border: 0;
+    margin: 3em auto;
+    max-width: 200px;
+    height: 1em;
+    text-align: center;
+    position: relative;
+}
+
+.ap-body hr::before {
+    content: '◆ ◆ ◆';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6em;
+    font-size: 0.6rem;
+    letter-spacing: 0.8em;
+    color: var(--ap-gold);
+    opacity: 0.5;
+}
+
+/* ============ Código ============ */
+.ap-body code {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    padding: 0.15em 0.35em;
+    background-color: var(--ap-purple-soft);
+    color: var(--ap-purple-deep);
+    border-radius: 3px;
+}
+
+.ap-body pre {
+    margin: 1.8em auto;
+    padding: 1.25rem 1.5rem;
+    background-color: var(--ap-paper-warm);
+    border-left: 3px solid var(--ap-purple);
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+.ap-body pre code {
+    background: transparent;
+    padding: 0;
+    color: var(--ap-ink);
+}
+
+/* ============ Imágenes sueltas ============ */
+.ap-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 1.5em auto;
+    display: block;
+}
+
+/* ============ Tablas ============ */
+.ap-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.8em auto;
+    font-size: 0.95rem;
+}
+
+.ap-body th,
+.ap-body td {
+    padding: 0.7em 1em;
+    text-align: left;
+    border-bottom: 1px solid var(--ap-paper-deep);
+}
+
+.ap-body th {
+    font-weight: 600;
+    color: var(--ap-ink);
+    border-bottom: 2px solid var(--ap-purple);
+}
+
+/* ============================================================
+   CIERRE ORNAMENTAL
+   ============================================================ */
+.ap-closer {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: clamp(3rem, 6vw, 4rem) 0 clamp(2.5rem, 5vw, 3.5rem);
+}
+
+.ap-closer-diamond {
+    width: 5px;
+    height: 5px;
+    background: linear-gradient(135deg, var(--ap-purple) 50%, var(--ap-gold) 50%);
+    transform: rotate(45deg);
+    opacity: 0.55;
+}
+
+/* ============================================================
+   NAVEGACIÓN ENTRE ARTÍCULOS (prev / next)
+   ============================================================ */
+.ap-siblings {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin: 0 0 clamp(2.5rem, 5vw, 3.5rem);
+    padding-top: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid rgba(91, 18, 104, 0.1);
+}
+
+.ap-sibling {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 1.25rem 1.5rem;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    border: 1px solid rgba(91, 18, 104, 0.08);
+    text-decoration: none;
+    color: inherit;
+    transition:
+        background-color 0.4s ease,
+        border-color 0.4s ease,
+        transform 0.5s var(--ap-ease),
+        box-shadow 0.5s var(--ap-ease);
+}
+
+.ap-sibling:hover {
+    background-color: rgba(255, 255, 255, 0.98);
+    border-color: rgba(91, 18, 104, 0.18);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 32px rgba(91, 18, 104, 0.08);
+}
+
+.ap-sibling--placeholder {
+    background: transparent;
+    border-color: transparent;
+    pointer-events: none;
+}
+
+.ap-sibling--next {
+    text-align: right;
+    align-items: flex-end;
+}
+
+.ap-sibling-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ap-ink-muted);
+    transition: color 0.4s ease, gap 0.4s var(--ap-ease);
+}
+
+.ap-sibling:hover .ap-sibling-label {
+    color: var(--ap-purple);
+}
+
+.ap-sibling--prev:hover .ap-sibling-label {
+    gap: 0.8rem;
+}
+
+.ap-sibling--prev:hover .ap-sibling-label svg {
+    transform: translateX(-2px);
+}
+
+.ap-sibling--next:hover .ap-sibling-label {
+    gap: 0.8rem;
+}
+
+.ap-sibling--next:hover .ap-sibling-label svg {
+    transform: translateX(2px);
+}
+
+.ap-sibling-label svg {
+    transition: transform 0.4s var(--ap-ease);
+    flex-shrink: 0;
+}
+
+.ap-sibling-title {
+    font-size: 1.02rem;
+    line-height: 1.35;
+    font-weight: 400;
+    color: var(--ap-ink);
+    letter-spacing: -0.008em;
+    transition: color 0.4s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ap-sibling:hover .ap-sibling-title {
+    color: var(--ap-purple);
+}
+
+/* ============================================================
+   CTA FINAL
+   ============================================================ */
+.ap-end {
+    text-align: center;
+    margin-top: clamp(1.5rem, 3vw, 2rem);
+}
+
+.ap-end-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.6rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ap-purple);
+    text-decoration: none;
+    border: 1px solid rgba(91, 18, 104, 0.25);
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    transition:
+        background-color 0.4s ease,
+        border-color 0.4s ease,
+        color 0.4s ease,
+        gap 0.4s var(--ap-ease);
+}
+
+.ap-end-link:hover {
+    background-color: var(--ap-purple);
+    border-color: var(--ap-purple);
+    color: var(--ap-paper);
+    gap: 1rem;
+}
+
+.ap-end-link svg {
+    transition: transform 0.4s var(--ap-ease);
+}
+
+.ap-end-link:hover svg {
+    transform: translateX(2px);
+}
+
+/* ============================================================
+   LOADING / ERROR
+   ============================================================ */
+.ap-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 6rem 0;
+}
+
+.ap-loading-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ap-ink-muted);
+}
+
+.ap-loading-dots {
+    display: flex;
+    gap: 0.6rem;
+}
+
+.ap-loading-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--ap-purple);
+    opacity: 0.3;
+    animation: apDot 1.4s ease-in-out infinite;
+}
+
+.ap-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.ap-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes apDot {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.3; }
+    40% { transform: scale(1.2); opacity: 1; }
+}
+
+.ap-error {
+    text-align: center;
+    padding: 4rem 0 2rem;
+    max-width: 540px;
+    margin: 0 auto;
+}
+
+.ap-error-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--ap-gold);
+}
+
+.ap-error-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--ap-gold);
+}
+
+.ap-error-title {
+    font-family: var(--font-base);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 300;
+    letter-spacing: -0.022em;
+    line-height: 1.15;
+    color: var(--ap-purple);
+    margin: 0 0 1rem;
+}
+
+.ap-error-title em {
+    font-style: italic;
+    color: var(--ap-purple-deep);
+}
+
+.ap-error-lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--ap-ink-soft);
+    opacity: 0.85;
+    margin: 0 0 2rem;
+}
+
+.ap-back-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.6rem;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ap-paper);
+    background-color: var(--ap-purple);
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    transition:
+        background-color 0.4s ease,
+        gap 0.4s var(--ap-ease);
+    font-family: inherit;
+}
+
+.ap-back-cta:hover {
+    background-color: var(--ap-purple-deep);
+    gap: 0.9rem;
+}
+
+.ap-back-cta svg {
+    transition: transform 0.4s var(--ap-ease);
+}
+
+.ap-back-cta:hover svg {
+    transform: translateX(-3px);
+}
+
+/* ============================================================
+   Animaciones
+   ============================================================ */
+@keyframes apFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes apFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 768px) {
+    .ap-container {
+        max-width: 100%;
+    }
+
+    .ap-back {
+        margin-bottom: 2rem;
+    }
+
+    .ap-eyebrow {
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        gap: 0.45rem;
+    }
+
+    .ap-body {
+        font-size: 1rem;
+        line-height: 1.72;
+    }
+
+    .ap-body blockquote {
+        padding-left: 1.25rem;
+        font-size: 1.05rem;
+    }
+
+    .ap-siblings {
+        grid-template-columns: 1fr;
+        gap: 0.85rem;
+    }
+
+    .ap-sibling--placeholder {
+        display: none;
+    }
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .ap-back,
+    .ap-header,
+    .ap-featured,
+    .ap-body,
+    .ap-loading-dot,
+    .ap-progress-fill {
+        animation: none !important;
+        transition-duration: 0.1s !important;
+    }
+    .ap-header,
+    .ap-featured,
+    .ap-body {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+    .ap-bg,
+    .ap-bg-veil,
+    .ap-progress,
+    .ap-back,
+    .ap-closer,
+    .ap-siblings,
+    .ap-end {
+        display: none !important;
+    }
+
+    .ap {
+        background: white;
+        padding: 1cm 0;
+        min-height: auto;
+    }
+
+    .ap-container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .ap-title {
+        color: black;
+        font-size: 24pt;
+    }
+
+    .ap-eyebrow {
+        color: #666;
+    }
+
+    .ap-eyebrow-cat {
+        color: black;
+    }
+
+    .ap-body {
+        font-size: 11pt;
+        line-height: 1.6;
+        color: black;
+    }
+
+    .ap-body a {
+        color: black;
+        background: none;
+    }
+
+    .ap-body a::after {
+        content: ' (' attr(href) ')';
+        font-size: 9pt;
+        color: #666;
+    }
+
+    .ap-body h2,
+    .ap-body h3,
+    .ap-body h4 {
+        color: black;
+        page-break-after: avoid;
+    }
+
+    .ap-body img,
+    .ap-featured-img {
+        max-width: 100%;
+        page-break-inside: avoid;
+        box-shadow: none;
+    }
+}
+
+/* ============================================================
+   PATCH 22 — MODO LECTURA
+   ------------------------------------------------------------
+   Toggle sepia para descansar la vista en artículos largos.
+   Botón flotante a la derecha (debajo del navbar fijo). Al
+   activarse aplica un sepia cálido al contenedor completo con
+   transición suave en todos los colores.
+   ============================================================ */
+
+/* ============ Botón flotante ============ */
+.ap-reading-toggle {
+    position: fixed;
+    /* Justo debajo del navbar */
+    top: calc(var(--nav-height, 72px) + 1rem);
+    right: clamp(1rem, 3vw, 2rem);
+    z-index: 90;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 1rem 0.6rem 0.85rem;
+    background: rgba(250, 248, 243, 0.92);
+    backdrop-filter: blur(10px) saturate(160%);
+    -webkit-backdrop-filter: blur(10px) saturate(160%);
+    border: 1px solid rgba(91, 18, 104, 0.18);
+    border-radius: 999px;
+    color: var(--ap-purple);
+    font-family: var(--font-base);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(91, 18, 104, 0.08);
+    transition:
+        background 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ap-reading-toggle:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: var(--ap-purple);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(91, 18, 104, 0.14);
+}
+
+.ap-reading-toggle:focus-visible {
+    outline: 2px solid var(--ap-gold);
+    outline-offset: 4px;
+}
+
+.ap-reading-toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ap-purple);
+    transition: color 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* En modo lectura: el botón cambia de tono para coherencia */
+.ap.is-reading-mode .ap-reading-toggle {
+    background: rgba(244, 234, 216, 0.95);
+    border-color: rgba(125, 91, 50, 0.32);
+    color: #6a4a26;
+}
+
+.ap.is-reading-mode .ap-reading-toggle:hover {
+    background: rgba(244, 234, 216, 1);
+    border-color: #6a4a26;
+}
+
+.ap.is-reading-mode .ap-reading-toggle-icon {
+    color: #6a4a26;
+    transform: rotate(180deg);
+}
+
+/* Mobile: ocultamos el texto, dejamos solo el ícono circular */
+@media (max-width: 720px) {
+    .ap-reading-toggle {
+        padding: 0.65rem;
+        width: 42px;
+        height: 42px;
+        gap: 0;
+    }
+
+    .ap-reading-toggle-label {
+        display: none;
+    }
+}
+
+/* ============ Transición global del modo lectura ============
+   El truco: definimos custom-props nuevas en .ap.is-reading-mode
+   que sobreescriben las del scope local de la página, pero
+   con transición. Como las custom-props no son interpolables,
+   aplicamos la transición directamente a background-color y
+   color en los elementos clave. */
+
+.ap,
+.ap-body,
+.ap-body p,
+.ap-body h1,
+.ap-body h2,
+.ap-body h3,
+.ap-body h4,
+.ap-body h5,
+.ap-body h6,
+.ap-body li,
+.ap-body blockquote,
+.ap-body strong,
+.ap-body em,
+.ap-title,
+.ap-lead,
+.ap-eyebrow,
+.ap-back,
+.ap-divider,
+.ap-cta-final,
+.ap-nav {
+    transition:
+        background-color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        color 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============ Modo lectura activo ============ */
+.ap.is-reading-mode {
+    /* Re-defino tokens con valores sepia cálidos.
+       Esto cascadea por la página y los elementos que usan
+       var(--ap-paper) o var(--ap-ink) automáticamente cambian. */
+    --ap-paper: #f4ead8;
+    --ap-paper-warm: #ede1c8;
+    --ap-paper-deep: #e2d4b6;
+    --ap-ink: #3a2e22;
+    --ap-ink-soft: #524134;
+    --ap-ink-muted: #806b53;
+    /* El morado se mantiene pero un poco más cálido */
+    --ap-purple: #5b1268;
+}
+
+/* Forzamos algunos elementos a tomar el nuevo fondo de forma explícita
+   por si su background original era literal en hex (no via var). */
+.ap.is-reading-mode .ap-bg {
+    background-color: #f4ead8 !important;
+    transition: background-color 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ap.is-reading-mode .ap-bg-veil {
+    background:
+        radial-gradient(ellipse 90% 70% at center,
+            rgba(244, 234, 216, 0.96) 0%,
+            rgba(244, 234, 216, 0.85) 50%,
+            rgba(237, 225, 200, 0.78) 100%) !important;
+    transition: background 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ap.is-reading-mode .ap-body {
+    color: #3a2e22;
+}
+
+.ap.is-reading-mode .ap-body p,
+.ap.is-reading-mode .ap-body li,
+.ap.is-reading-mode .ap-body strong,
+.ap.is-reading-mode .ap-body em {
+    color: #3a2e22;
+}
+
+/* Bordes y separadores con tono más cálido en modo lectura */
+.ap.is-reading-mode .ap-body blockquote {
+    border-left-color: var(--ap-gold);
+    background-color: rgba(244, 234, 216, 0.5);
+}
+
+/* Reading progress bar adopta tono sepia */
+.ap.is-reading-mode .ap-progress {
+    background: rgba(125, 91, 50, 0.08);
+}
+
+.ap.is-reading-mode .ap-progress-fill {
+    background: linear-gradient(90deg, #6a4a26 0%, var(--ap-gold) 100%);
+}
+
+/* Print: nunca el modo lectura sale impreso */
+@media print {
+    .ap-reading-toggle {
+        display: none !important;
+    }
+}
+
+/* Reduced motion: la transición del modo lectura se acorta */
+@media (prefers-reduced-motion: reduce) {
+    .ap,
+    .ap-body,
+    .ap-body p,
+    .ap-body h1,
+    .ap-body h2,
+    .ap-body h3,
+    .ap-body h4,
+    .ap-body h5,
+    .ap-body h6,
+    .ap-body li,
+    .ap-body blockquote,
+    .ap-body strong,
+    .ap-body em,
+    .ap-title,
+    .ap-lead,
+    .ap-eyebrow,
+    .ap-back,
+    .ap-divider,
+    .ap-cta-final,
+    .ap-nav,
+    .ap-reading-toggle,
+    .ap-reading-toggle-icon {
+        transition-duration: 0.15s !important;
+    }
+
+    .ap.is-reading-mode .ap-reading-toggle-icon {
+        transform: none;
+    }
+
+    .ap-reading-toggle:hover {
+        transform: none;
+    }
+}

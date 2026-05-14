@@ -1,0 +1,1075 @@
+/* ============================================================
+   TEAM — Página /equipo · Patch 17
+   ------------------------------------------------------------
+   Fondo Opción 2: CSS puro + constelación tenue
+   Sin jerarquía visual: todos los miembros al mismo tamaño.
+   ============================================================ */
+
+.team {
+    --t-purple: var(--color-accent, #5b1268);
+    --t-purple-deep: var(--color-accent-deep, #3d0a47);
+    --t-purple-light: #8b3aa3;
+    --t-lilac: #b89cd9;
+    --t-gold: var(--color-gold, #c89b3c);
+    --t-gold-bright: #e0b454;
+    --t-gold-deep: #a07d24;
+    --t-paper: var(--color-paper, #faf8f3);
+    --t-paper-warm: var(--color-paper-warm, #f1ece0);
+    --t-paper-deep: var(--color-paper-deep, #e8e2d2);
+    --t-ink: var(--color-ink, #1a1410);
+    --t-ink-soft: var(--color-ink-soft, #3d3530);
+    --t-ink-muted: var(--color-ink-muted, #7a716a);
+    --t-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --t-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    position: relative;
+    background-color: #ffffff;
+    padding: clamp(7rem, 12vw, 10rem) 0 clamp(5rem, 10vw, 7rem);
+    min-height: 100vh;
+    isolation: isolate;
+    overflow-x: clip;
+}
+
+/* ============================================================
+   FONDO — CSS puro + constelación SVG
+   Capas:
+    1. Color base (paper) + manchas radiales asimétricas
+    2. Grano SVG (alma de papel)
+    3. Constelación tenue (red de pensamiento)
+   ============================================================ */
+
+.team-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+    background-color: var(--t-paper);
+    background-image:
+        /* Mancha lila suave arriba-derecha */
+        radial-gradient(ellipse 50% 40% at 88% 8%,
+            rgba(139, 58, 163, 0.07) 0%,
+            transparent 60%),
+        /* Mancha morada profunda abajo-izquierda */
+        radial-gradient(ellipse 55% 45% at 12% 92%,
+            rgba(91, 18, 104, 0.075) 0%,
+            transparent 60%),
+        /* Mancha dorada chica medio-derecha */
+        radial-gradient(ellipse 30% 25% at 95% 50%,
+            rgba(200, 155, 60, 0.05) 0%,
+            transparent 65%),
+        /* Mancha dorada chica medio-izquierda */
+        radial-gradient(ellipse 28% 22% at 5% 45%,
+            rgba(200, 155, 60, 0.04) 0%,
+            transparent 65%),
+        /* Vignette: paper se cierra hacia los bordes */
+        radial-gradient(ellipse 100% 80% at 50% 50%,
+            transparent 0%,
+            rgba(241, 236, 224, 0.4) 100%);
+}
+
+/* Capa 2: grano SVG */
+.team-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.16  0 0 0 0 0.13  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 180px 180px;
+}
+
+/* Capa 3: constelación */
+.team-bg-constellation {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    color: var(--t-gold);
+    opacity: 0.4;
+    display: none;
+    /* Mask radial para que la constelación se concentre en los bordes
+       y el centro respire para las cards */
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 40%,
+        black 100%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 50%,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 40%,
+        black 100%);
+}
+
+.team-bg-constellation svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+@media (min-width: 900px) {
+    .team-bg-constellation {
+        display: block;
+    }
+}
+
+/* ============================================================
+   Contenedor
+   ============================================================ */
+.team-container {
+    width: 100%;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 var(--container-padding, 2rem);
+    position: relative;
+}
+
+/* ============================================================
+   HEADER EDITORIAL — coherente con Blog
+   ============================================================ */
+.team-header {
+    text-align: center;
+    max-width: 720px;
+    margin: 0 auto clamp(4rem, 8vw, 6rem);
+    animation: tFadeUp 1s var(--t-ease) both;
+}
+
+.team-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 2rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--t-gold);
+    opacity: 0;
+    animation: tFadeUp 0.9s var(--t-ease) 0.1s forwards;
+}
+
+.team-kicker-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--t-gold);
+    opacity: 0.85;
+}
+
+.team-kicker-label {
+    padding-right: 0.05em;
+}
+
+.team-title {
+    font-family: var(--font-base);
+    font-size: clamp(3rem, 7.5vw, 5.8rem);
+    /* Patch 22: peso 600 morado en línea con la nueva tipografía del sitio */
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--t-purple);
+    margin: 0 0 1.75rem;
+    text-wrap: balance;
+}
+
+/* Sin italic ya — pero conservamos el selector por si en el futuro
+   vuelven a usar <em>. Hereda morado, peso 600, sin italic. */
+.team-title em {
+    font-style: normal;
+    font-weight: 600;
+    color: var(--t-purple);
+}
+
+.team-lead {
+    font-size: clamp(1rem, 1.2vw, 1.1rem);
+    line-height: 1.75;
+    color: var(--t-ink-soft);
+    opacity: 0.85;
+    max-width: 560px;
+    margin: 0 auto 2.5rem;
+    font-weight: 300;
+    text-wrap: balance;
+}
+
+.team-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.team-ornament-line {
+    width: 56px;
+    height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+.team-ornament-line--purple {
+    color: var(--t-purple);
+    opacity: 0.55;
+}
+
+.team-ornament-line--gold {
+    color: var(--t-gold);
+    opacity: 0.7;
+}
+
+.team-ornament-diamond {
+    width: 5px;
+    height: 5px;
+    transform: rotate(45deg);
+    background: linear-gradient(135deg,
+        var(--t-purple) 0%,
+        var(--t-purple) 50%,
+        var(--t-gold) 50%,
+        var(--t-gold) 100%);
+    flex-shrink: 0;
+}
+
+/* ============================================================
+   GRID DE MIEMBROS
+   - Desktop ≥1100px: 4 columnas (fila horizontal, hombro a hombro)
+   - Tablet 720–1099px: 2x2
+   - Mobile <720px: 1 columna
+   ============================================================ */
+.team-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(3rem, 5vw, 4rem) clamp(1.5rem, 3vw, 2.5rem);
+    justify-items: center;
+}
+
+@media (min-width: 720px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1100px) {
+    .team-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: clamp(2rem, 3.5vw, 3rem);
+    }
+}
+
+.team-card-wrap {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: tCardIn 0.8s var(--t-ease) var(--team-delay, 0ms) forwards;
+    width: 100%;
+    max-width: 280px;
+    display: flex;
+    justify-content: center;
+}
+
+@keyframes tCardIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================================
+   TEAM CARD
+   ============================================================ */
+.team-card {
+    appearance: none;
+    background: transparent;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    color: inherit;
+    text-align: center;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    /* Patch 22: la card entera tiene un lift suave al hover */
+    transition: transform 0.55s var(--t-ease);
+}
+
+/* Patch 22: lift + sensación de "crece hacia adelante" */
+.team-card:hover {
+    transform: translateY(-8px);
+}
+
+.team-card:focus-visible {
+    outline: none;
+}
+
+.team-card:focus-visible .team-avatar-ring {
+    box-shadow: 0 0 0 4px rgba(200, 155, 60, 0.35);
+}
+
+/* ============================================================
+   AVATAR — Marco con anillo cónico animado violeta+dorado
+   ============================================================ */
+.team-avatar {
+    --avatar-size: 180px;
+    --ring-thickness: 3px;
+    position: relative;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+    flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+    .team-avatar {
+        --avatar-size: 200px;
+    }
+}
+
+@media (min-width: 1100px) {
+    .team-avatar {
+        --avatar-size: 170px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .team-avatar {
+        --avatar-size: 185px;
+    }
+}
+
+/* Anillo exterior: gradiente cónico animado violeta-dorado-lila.
+   Construido con padding + background-clip para efecto de "borde gradiente". */
+.team-avatar-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: var(--ring-thickness);
+    background:
+        conic-gradient(
+            from 0deg,
+            var(--t-gold) 0deg,
+            var(--t-purple) 60deg,
+            var(--t-lilac) 120deg,
+            var(--t-gold-bright) 180deg,
+            var(--t-purple-deep) 240deg,
+            var(--t-lilac) 300deg,
+            var(--t-gold) 360deg
+        );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: tRingSpin 18s linear infinite;
+    transition: box-shadow 0.4s ease;
+    /* Filtro sutil para reforzar la sensación metalizada */
+    filter: saturate(1.05);
+}
+
+@keyframes tRingSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.team-card:hover .team-avatar-ring {
+    animation-duration: 6s;  /* Acelera en hover */
+}
+
+/* Inner: contenedor circular del avatar */
+.team-avatar-inner {
+    position: absolute;
+    inset: calc(var(--ring-thickness) + 4px);
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--t-paper);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+        0 8px 24px rgba(91, 18, 104, 0.12);
+    transition: transform 0.6s var(--t-ease);
+}
+
+.team-card:hover .team-avatar-inner {
+    transform: scale(1.06);
+}
+
+.team-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    transition: transform 0.8s var(--t-ease), filter 0.5s ease;
+}
+
+.team-card:hover .team-avatar-img {
+    transform: scale(1.1);
+}
+
+.team-avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Empty state (Sebastián): el anillo se atenúa para no llamar la atención */
+.team-avatar--empty .team-avatar-ring {
+    opacity: 0.6;
+    filter: saturate(0.7);
+}
+
+/* ============================================================
+   BADGE DORADO — Círculo con ícono SVG, abajo-centro del avatar
+   ============================================================ */
+.team-avatar-badge {
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,
+        var(--t-gold-bright) 0%,
+        var(--t-gold) 50%,
+        var(--t-gold-deep) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--t-paper);
+    box-shadow:
+        0 0 0 4px var(--t-paper),
+        0 4px 12px rgba(91, 18, 104, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s var(--t-ease-spring), box-shadow 0.4s ease;
+    z-index: 2;
+}
+
+.team-avatar-badge svg {
+    width: 18px;
+    height: 18px;
+}
+
+.team-card:hover .team-avatar-badge {
+    transform: translateX(-50%) scale(1.1);
+    box-shadow:
+        0 0 0 4px var(--t-paper),
+        0 8px 20px rgba(200, 155, 60, 0.35),
+        inset 0 1px 1px rgba(255, 255, 255, 0.5),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* ============================================================
+   CARD BODY — nombre + rol
+   ============================================================ */
+.team-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    align-items: center;
+    max-width: 280px;
+    margin-top: 0.5rem;
+}
+
+.team-card-name {
+    font-family: var(--font-base);
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--t-purple);
+    margin: 0;
+    transition: color 0.4s ease;
+    text-wrap: balance;
+}
+
+.team-card:hover .team-card-name {
+    color: var(--t-purple-deep);
+}
+
+.team-card-role {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--t-ink-soft);
+    opacity: 0.78;
+    margin: 0;
+    font-weight: 400;
+    text-wrap: balance;
+}
+
+.team-card-soon {
+    margin-top: 0.4rem;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--t-gold);
+    padding: 0.25rem 0.7rem;
+    border: 1px solid rgba(200, 155, 60, 0.4);
+    border-radius: 999px;
+    background-color: rgba(200, 155, 60, 0.04);
+}
+
+/* CTA "Ver perfil" — aparece en hover */
+.team-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--t-purple);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.4s ease, transform 0.4s var(--t-ease), gap 0.4s var(--t-ease);
+}
+
+.team-card:hover .team-card-cta,
+.team-card:focus-visible .team-card-cta {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.team-card:hover .team-card-cta {
+    gap: 0.65rem;
+}
+
+.team-card-cta svg {
+    transition: transform 0.4s var(--t-ease);
+}
+
+.team-card:hover .team-card-cta svg {
+    transform: translateX(2px);
+}
+
+/* ============================================================
+   CIERRE
+   ============================================================ */
+.team-closer {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin: clamp(4rem, 8vw, 6rem) 0 0;
+}
+
+.team-closer-diamond {
+    width: 5px;
+    height: 5px;
+    background: linear-gradient(135deg, var(--t-purple) 50%, var(--t-gold) 50%);
+    transform: rotate(45deg);
+    opacity: 0.45;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.team-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(26, 20, 16, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    /* Patch 22: anclado arriba con respiración para el navbar */
+    align-items: flex-start;
+    justify-content: center;
+    padding: calc(var(--nav-height, 72px) + 1.25rem) clamp(1rem, 3vw, 1.5rem) clamp(1rem, 3vw, 1.5rem);
+    animation: tOverlayIn 0.4s var(--t-ease) both;
+}
+
+@keyframes tOverlayIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.team-modal {
+    position: relative;
+    background-color: var(--t-paper);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 920px;
+    /* Patch 22: respeta el navbar */
+    max-height: calc(100vh - var(--nav-height, 72px) - 2.5rem);
+    overflow-y: auto;
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.4),
+        0 8px 24px rgba(91, 18, 104, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.6);
+    /* Patch 22: animación con transform-origin variable según la card clickeada.
+       Si no hay origen detectado (no JS rect), cae al modal centrado. */
+    transform-origin: var(--origin-x, 50vw) var(--origin-y, 50vh);
+    animation: tModalIn 0.55s var(--t-ease) both;
+    /* Hairline ornamental decorativa al borde */
+    background-image:
+        linear-gradient(180deg,
+            rgba(255, 255, 255, 0.4) 0%,
+            transparent 20%),
+        radial-gradient(ellipse 80% 60% at 30% 0%,
+            rgba(91, 18, 104, 0.04) 0%,
+            transparent 60%);
+}
+
+/* Si tenemos rect de origen, usamos animación de "emergencia desde la card" */
+.team-modal-overlay.has-origin .team-modal {
+    animation: tModalEmergeFromCard 0.6s var(--t-ease) both;
+}
+
+@keyframes tModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Patch 22: emergencia editorial desde la posición de la card */
+@keyframes tModalEmergeFromCard {
+    0% {
+        opacity: 0;
+        transform: scale(0.1);
+    }
+    35% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Botón cerrar */
+.team-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(91, 18, 104, 0.1);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--t-ink-soft);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s var(--t-ease);
+}
+
+.team-modal-close:hover {
+    background-color: var(--t-purple);
+    color: var(--t-paper);
+    transform: rotate(90deg);
+}
+
+.team-modal-close:focus-visible {
+    outline: 2px solid var(--t-gold);
+    outline-offset: 2px;
+}
+
+/* Grid del modal: avatar a la izquierda, contenido a la derecha */
+.team-modal-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    padding: clamp(2rem, 4vw, 3rem);
+    align-items: start;
+}
+
+@media (max-width: 720px) {
+    .team-modal-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 2.5rem 1.5rem 2rem;
+        gap: 1.5rem;
+    }
+}
+
+/* Avatar del modal — más grande */
+.team-modal-media {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 0.5rem;
+}
+
+.team-modal-avatar {
+    --avatar-size: 240px;
+    --ring-thickness: 4px;
+    position: relative;
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+}
+
+@media (max-width: 720px) {
+    .team-modal-avatar {
+        --avatar-size: 200px;
+    }
+}
+
+.team-modal-avatar-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: var(--ring-thickness);
+    background: conic-gradient(
+        from 0deg,
+        var(--t-gold) 0deg,
+        var(--t-purple) 60deg,
+        var(--t-lilac) 120deg,
+        var(--t-gold-bright) 180deg,
+        var(--t-purple-deep) 240deg,
+        var(--t-lilac) 300deg,
+        var(--t-gold) 360deg
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: tRingSpin 14s linear infinite;
+    filter: saturate(1.05);
+}
+
+.team-modal-avatar-inner {
+    position: absolute;
+    inset: calc(var(--ring-thickness) + 5px);
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--t-paper);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8),
+        0 12px 32px rgba(91, 18, 104, 0.18);
+}
+
+.team-modal-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+}
+
+.team-modal-avatar-badge {
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,
+        var(--t-gold-bright) 0%,
+        var(--t-gold) 50%,
+        var(--t-gold-deep) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--t-paper);
+    box-shadow:
+        0 0 0 5px var(--t-paper),
+        0 6px 16px rgba(91, 18, 104, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4),
+        inset 0 -1px 1px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+.team-modal-avatar-badge svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* Contenido del modal */
+.team-modal-content {
+    min-width: 0;
+}
+
+.team-modal-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--t-gold);
+}
+
+.team-modal-kicker-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: var(--t-gold);
+}
+
+@media (max-width: 720px) {
+    .team-modal-kicker {
+        justify-content: center;
+    }
+}
+
+.team-modal-name {
+    font-family: var(--font-base);
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--t-purple);
+    margin: 0 0 0.65rem;
+}
+
+.team-modal-role {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--t-ink-soft);
+    opacity: 0.8;
+    margin: 0;
+    font-weight: 400;
+}
+
+.team-modal-hairline {
+    height: 1px;
+    width: 60px;
+    background: linear-gradient(90deg, var(--t-purple), var(--t-gold));
+    margin: 1.5rem 0;
+}
+
+@media (max-width: 720px) {
+    .team-modal-hairline {
+        margin: 1.5rem auto;
+    }
+}
+
+.team-modal-bio {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--t-ink-soft);
+    font-weight: 400;
+}
+
+.team-modal-bio p {
+    margin: 0 0 1em;
+}
+
+.team-modal-bio p:last-child {
+    margin-bottom: 0;
+}
+
+/* Bloques de meta: Áreas de interés / Formación */
+.team-modal-meta {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(91, 18, 104, 0.1);
+}
+
+.team-modal-meta-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--t-gold);
+    margin-bottom: 0.85rem;
+}
+
+.team-modal-meta-text {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--t-ink-soft);
+    opacity: 0.85;
+    margin: 0;
+}
+
+.team-modal-meta-tags {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+@media (max-width: 720px) {
+    .team-modal-meta-tags {
+        justify-content: center;
+    }
+}
+
+.team-modal-meta-tags li {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--t-purple);
+    padding: 0.4rem 0.85rem;
+    background-color: rgba(91, 18, 104, 0.06);
+    border: 1px solid rgba(91, 18, 104, 0.1);
+    border-radius: 999px;
+    letter-spacing: 0.005em;
+}
+
+/* ============================================================
+   Animaciones generales
+   ============================================================ */
+@keyframes tFadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+    .team-card-wrap,
+    .team-header,
+    .team-kicker,
+    .team-avatar-ring,
+    .team-modal-avatar-ring,
+    .team-modal,
+    .team-modal-overlay {
+        animation: none !important;
+        transition-duration: 0.1s !important;
+    }
+    .team-card-wrap,
+    .team-header,
+    .team-kicker {
+        opacity: 1;
+        transform: none;
+    }
+    .team-modal {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* ============================================================
+   Mobile fine-tuning
+   ============================================================ */
+@media (max-width: 720px) {
+    .team-header {
+        margin-bottom: clamp(2.5rem, 6vw, 3.5rem);
+    }
+
+    .team-kicker {
+        font-size: 0.62rem;
+        letter-spacing: 0.32em;
+        gap: 0.65rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .team-ornament-line {
+        width: 42px;
+    }
+
+    .team-modal-close {
+        width: 34px;
+        height: 34px;
+        top: 0.75rem;
+        right: 0.75rem;
+    }
+}
+
+/* ============================================================
+   PATCH 26 — Botón "Hoja de vida" en el modal
+   ------------------------------------------------------------
+   Vive en .team-modal-media, debajo del avatar grande.
+   Coherente con el sistema: borde morado 1px + uppercase
+   letter-spacing amplio + ícono PDF pequeño + hover relleno
+   morado→paper. En mobile se queda centrado bajo el avatar.
+   ============================================================ */
+
+.team-modal-cv-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+    padding: 0.7rem 1.2rem;
+    background: transparent;
+    color: var(--t-purple);
+    text-decoration: none;
+    font-family: var(--font-base);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    border: 1px solid var(--t-purple);
+    border-radius: 999px;
+    align-self: center;
+    transition:
+        background 0.4s var(--t-ease),
+        color 0.4s var(--t-ease),
+        transform 0.4s var(--t-ease),
+        box-shadow 0.4s var(--t-ease);
+}
+
+.team-modal-cv-btn:hover {
+    background: var(--t-purple);
+    color: var(--t-paper);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(91, 18, 104, 0.22);
+}
+
+.team-modal-cv-btn:focus-visible {
+    outline: 2px solid var(--t-gold);
+    outline-offset: 4px;
+}
+
+.team-modal-cv-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s var(--t-ease);
+}
+
+.team-modal-cv-btn:hover .team-modal-cv-icon {
+    transform: translateY(1px);
+}
+
+/* Aseguramos que team-modal-media sea flex column en desktop
+   para que el botón se alinee debajo del avatar. */
+.team-modal-media {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Mobile: el botón sigue centrado debajo del avatar */
+@media (max-width: 720px) {
+    .team-modal-cv-btn {
+        margin-top: 1.25rem;
+    }
+}
+
+/* Print: no mostrar el botón */
+@media print {
+    .team-modal-cv-btn { display: none !important; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .team-modal-cv-btn:hover {
+        transform: none;
+    }
+    .team-modal-cv-btn:hover .team-modal-cv-icon {
+        transform: none;
+    }
+}

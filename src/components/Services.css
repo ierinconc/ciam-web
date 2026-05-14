@@ -1,0 +1,1152 @@
+/* ============================================================
+   SERVICES — Página /servicios · Patch 21
+   ------------------------------------------------------------
+   Vida en las cards (eco de StrategicNorth):
+    - Hover: borde cónico que rota, lift, escala suave del contenido,
+      ícono crece y rota, título escala, halo de luz aparece
+   Modal emergente desde la card clickeada:
+    - El modal aparece desde la posición real del botón (transform-origin
+      dinámico vía custom-props), con escala desde 0.08 hasta 1.
+   Fix bug del modal:
+    - align-items pasa de center a flex-start con padding-top que
+      respeta el navbar (la X siempre visible).
+    - max-height respeta nav-height para no competir con el navbar.
+   ============================================================ */
+
+.services {
+    --s-purple: var(--color-accent, #5b1268);
+    --s-purple-deep: var(--color-accent-deep, #3d0a47);
+    --s-purple-light: #8b3aa3;
+    --s-lilac: #b89cd9;
+    --s-lilac-soft: #d4bce6;
+    --s-gold: var(--color-gold, #c89b3c);
+    --s-gold-bright: #e0b454;
+    --s-gold-soft: #e6d4a0;
+    --s-gold-deep: #a07d24;
+    --s-paper: var(--color-paper, #faf8f3);
+    --s-paper-warm: var(--color-paper-warm, #f1ece0);
+    --s-paper-deep: var(--color-paper-deep, #e8e2d2);
+    --s-ink: var(--color-ink, #1a1410);
+    --s-ink-soft: var(--color-ink-soft, #3d3530);
+    --s-ink-muted: var(--color-ink-muted, #7a716a);
+    --s-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --s-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    position: relative;
+    padding: clamp(7rem, 12vw, 10rem) 0 clamp(5rem, 10vw, 7rem);
+    min-height: 100vh;
+    isolation: isolate;
+    overflow-x: clip;
+    background-color: var(--s-paper);
+}
+
+/* ============================================================
+   FONDO ATMÓSFERA
+   ============================================================ */
+
+.services-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+    background-color: var(--s-paper);
+    background-image: url('/services-bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    filter: grayscale(0.94) brightness(1.08) contrast(0.92);
+    opacity: 0.38;
+}
+
+@supports not (background-image: url('/services-bg.webp')) {
+    .services-bg { background-image: url('/services-bg.jpg'); }
+}
+
+@media (max-width: 720px) {
+    .services-bg {
+        background-image: url('/services-bg-mobile.webp');
+        background-attachment: scroll;
+        opacity: 0.32;
+    }
+}
+
+.services-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 120% 80% at center,
+            transparent 0%,
+            rgba(241, 236, 224, 0.3) 80%,
+            rgba(241, 236, 224, 0.55) 100%),
+        linear-gradient(135deg,
+            rgba(250, 248, 243, 0.72) 0%,
+            rgba(250, 248, 243, 0.82) 50%,
+            rgba(241, 236, 224, 0.88) 100%),
+        radial-gradient(ellipse 55% 45% at 18% 12%,
+            rgba(91, 18, 104, 0.13) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 45% at 82% 85%,
+            rgba(200, 155, 60, 0.1) 0%, transparent 60%);
+}
+
+.services-bg-grain {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.045;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='8'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.16  0 0 0 0 0.13  0 0 0 0.9 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 180px 180px;
+}
+
+/* ============================================================
+   CONTAINER
+   ============================================================ */
+
+.services-container {
+    max-width: var(--container-max, 1280px);
+    margin: 0 auto;
+    padding: 0 var(--container-padding, clamp(1.25rem, 4vw, 3rem));
+    position: relative;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.services-header {
+    text-align: center;
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+    opacity: 0;
+    animation: sFadeUp 0.9s var(--s-ease) 0.1s forwards;
+}
+
+.services-title {
+    font-family: var(--font-base);
+    font-size: clamp(3rem, 6.5vw, 5rem);
+    font-weight: 600;
+    color: var(--s-purple);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    margin-bottom: 1.5rem;
+}
+
+.services-lead {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    line-height: 1.75;
+    color: var(--s-ink-soft);
+    text-wrap: pretty;
+}
+
+.services-ornament {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+}
+
+.services-ornament-line {
+    display: block;
+    width: 56px;
+    height: 1px;
+}
+
+.services-ornament-line--purple {
+    background: linear-gradient(90deg, transparent, var(--s-purple));
+}
+
+.services-ornament-line--gold {
+    background: linear-gradient(90deg, var(--s-gold), transparent);
+}
+
+.services-ornament-diamond {
+    width: 9px;
+    height: 9px;
+    transform: rotate(45deg);
+    background: linear-gradient(135deg, var(--s-purple) 0% 50%, var(--s-gold) 50% 100%);
+}
+
+/* ============================================================
+   INTRO DE LA GRILLA
+   ============================================================ */
+
+.services-grid-intro {
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
+    opacity: 0;
+    animation: sFadeUp 0.9s var(--s-ease) 0.25s forwards;
+}
+
+.services-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin-bottom: 1rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--s-gold);
+}
+
+.services-kicker--gold { color: var(--s-gold); }
+
+.services-kicker-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--s-gold);
+}
+
+.services-kicker-label { padding: 0 0.2rem; }
+
+.services-grid-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 600;
+    color: var(--s-purple);
+    line-height: 1.1;
+    letter-spacing: -0.022em;
+    margin: 0 0 1rem;
+    text-wrap: balance;
+}
+
+.services-grid-title em {
+    font-style: normal;
+    color: var(--s-purple);
+    font-weight: 600;
+}
+
+.services-grid-sub {
+    max-width: 560px;
+    margin: 0 auto;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--s-ink-muted);
+    text-wrap: pretty;
+}
+
+/* ============================================================
+   GRILLA DE SERVICIOS (2x2)
+   ============================================================ */
+
+.services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.25rem, 2.5vw, 1.75rem);
+    margin: 0 0 clamp(4rem, 7vw, 5rem);
+    padding: 0;
+}
+
+@media (max-width: 760px) {
+    .services-grid { grid-template-columns: 1fr; }
+}
+
+.services-card-wrap {
+    opacity: 0;
+    animation: sFadeUp 0.9s var(--s-ease) forwards;
+    animation-delay: calc(0.4s + var(--services-delay, 0ms));
+}
+
+/* ============================================================
+   SERVICE CARD — Borde metálico animado + vida al hover
+   ============================================================ */
+
+.services-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 320px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-base);
+    border-radius: 14px;
+    /* En reposo: sin transform. Al hover/focus: lift suave + escala muy sutil */
+    transition:
+        transform 0.55s var(--s-ease),
+        box-shadow 0.55s var(--s-ease);
+    /* Reservamos GPU para animaciones fluidas del borde cónico */
+    will-change: transform;
+}
+
+/* ============ Borde metálico CÓNICO que rota al hover ============
+   Esta es la firma visual: igual concepto que las burbujas de Misión y
+   Visión, pero adaptado a la forma rectangular de la card.
+   En reposo: borde lila→dorado estático, suave.
+   En hover/focus: el cono empieza a rotar con suavidad, el metal "vive". */
+.services-card-border {
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    padding: 1.5px;
+    pointer-events: none;
+    background: conic-gradient(
+        from 0deg,
+        var(--s-purple) 0deg,
+        var(--s-lilac) 60deg,
+        var(--s-lilac-soft) 120deg,
+        var(--s-gold-soft) 180deg,
+        var(--s-gold) 220deg,
+        var(--s-lilac) 290deg,
+        var(--s-purple) 360deg
+    );
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.72;
+    /* Animación que SOLO se reproduce al hover. En reposo el cono es estático. */
+    animation: sBorderSpin 14s linear infinite;
+    animation-play-state: paused;
+    transition:
+        opacity 0.5s var(--s-ease),
+        filter 0.5s var(--s-ease);
+}
+
+@keyframes sBorderSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Halo exterior que aparece sutilmente al hover (luz que rodea la card) */
+.services-card-glow {
+    position: absolute;
+    inset: -2px;
+    border-radius: 16px;
+    pointer-events: none;
+    background: radial-gradient(
+        ellipse 100% 80% at 50% 50%,
+        rgba(200, 155, 60, 0.18) 0%,
+        rgba(91, 18, 104, 0.12) 40%,
+        transparent 70%
+    );
+    opacity: 0;
+    filter: blur(12px);
+    transition: opacity 0.55s var(--s-ease);
+    z-index: -1;
+}
+
+/* Contenido interno: tiene su propia escala sutil al hover */
+.services-card-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: clamp(2rem, 3vw, 2.5rem) clamp(1.75rem, 3vw, 2.25rem);
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 14px;
+    transition:
+        background 0.4s var(--s-ease),
+        transform 0.55s var(--s-ease);
+    transform-origin: center;
+}
+
+/* ============ HOVER de la card — VIDA (Patch 22: más generoso) ============ */
+.services-card:hover {
+    /* Lift más generoso y escala notable del conjunto */
+    transform: translateY(-10px) scale(1.025);
+    box-shadow:
+        0 14px 32px rgba(91, 18, 104, 0.14),
+        0 40px 90px rgba(91, 18, 104, 0.2);
+}
+
+.services-card:hover .services-card-border {
+    opacity: 1;
+    filter: saturate(1.25) brightness(1.1);
+    animation-play-state: running;
+}
+
+.services-card:hover .services-card-glow {
+    opacity: 1;
+}
+
+.services-card:hover .services-card-content {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scale(1.025);
+}
+
+/* Focus: equivalente a hover + halo dorado de accesibilidad */
+.services-card:focus-visible {
+    outline: none;
+    transform: translateY(-10px) scale(1.025);
+    box-shadow:
+        0 0 0 3px rgba(200, 155, 60, 0.4),
+        0 14px 32px rgba(91, 18, 104, 0.14),
+        0 40px 90px rgba(91, 18, 104, 0.2);
+}
+
+.services-card:focus-visible .services-card-border {
+    opacity: 1;
+    filter: saturate(1.25) brightness(1.1);
+    animation-play-state: running;
+}
+
+.services-card:focus-visible .services-card-glow { opacity: 1; }
+
+.services-card:focus-visible .services-card-content {
+    background: rgba(255, 255, 255, 0.85);
+    transform: scale(1.025);
+}
+
+/* Active (mientras se hace click): la card se "presiona" antes de emerger
+   al modal — una micro-respuesta táctil. */
+.services-card:active .services-card-content {
+    transform: scale(1.005);
+    transition-duration: 0.1s;
+}
+
+/* Header de la card */
+.services-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.services-card-number {
+    font-family: var(--font-base);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    color: var(--s-gold);
+    flex-shrink: 0;
+    transition: letter-spacing 0.4s var(--s-ease);
+}
+
+.services-card:hover .services-card-number,
+.services-card:focus-visible .services-card-number {
+    letter-spacing: 0.36em;
+}
+
+.services-card-hairline {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--s-purple) 0%, var(--s-gold) 100%);
+    opacity: 0.45;
+    transition: opacity 0.4s var(--s-ease);
+}
+
+.services-card:hover .services-card-hairline,
+.services-card:focus-visible .services-card-hairline {
+    opacity: 1;
+}
+
+/* Ícono grande con vida: crece + rota suavemente + cambia colores */
+.services-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1.5rem;
+    color: var(--s-purple);
+    background: rgba(91, 18, 104, 0.06);
+    border-radius: 50%;
+    transition:
+        transform 0.6s var(--s-ease-spring),
+        background 0.4s var(--s-ease),
+        color 0.4s var(--s-ease),
+        box-shadow 0.4s var(--s-ease);
+}
+
+.services-card-icon svg {
+    width: 30px;
+    height: 30px;
+    transition: transform 0.6s var(--s-ease-spring);
+}
+
+.services-card:hover .services-card-icon,
+.services-card:focus-visible .services-card-icon {
+    transform: scale(1.12) rotate(-6deg);
+    background: var(--s-purple);
+    color: var(--s-paper);
+    box-shadow:
+        0 6px 16px rgba(91, 18, 104, 0.25),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.services-card:hover .services-card-icon svg,
+.services-card:focus-visible .services-card-icon svg {
+    transform: scale(1.08);
+}
+
+/* Título: escala sutil + más peso visual al hover */
+.services-card-name {
+    font-size: clamp(1.2rem, 2vw, 1.45rem);
+    font-weight: 400;
+    color: var(--s-ink);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin-bottom: 0.85rem;
+    text-wrap: balance;
+    transition:
+        color 0.4s var(--s-ease),
+        letter-spacing 0.4s var(--s-ease);
+}
+
+.services-card:hover .services-card-name,
+.services-card:focus-visible .services-card-name {
+    color: var(--s-purple);
+    letter-spacing: -0.012em;
+}
+
+.services-card-tagline {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--s-ink-soft);
+    margin-bottom: 1.5rem;
+    flex: 1;
+    text-wrap: pretty;
+}
+
+.services-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--s-purple);
+    padding-top: 1rem;
+    border-top: 1px solid rgba(91, 18, 104, 0.12);
+    transition:
+        color 0.3s var(--s-ease),
+        gap 0.3s var(--s-ease),
+        border-color 0.4s var(--s-ease);
+}
+
+.services-card-cta svg {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.4s var(--s-ease);
+}
+
+.services-card:hover .services-card-cta,
+.services-card:focus-visible .services-card-cta {
+    color: var(--s-gold-deep);
+    gap: 0.9rem;
+    border-color: rgba(200, 155, 60, 0.4);
+}
+
+.services-card:hover .services-card-cta svg,
+.services-card:focus-visible .services-card-cta svg {
+    transform: translateX(4px);
+}
+
+/* ============================================================
+   BANNER DEL CATÁLOGO
+   ============================================================ */
+
+.services-catalog-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: clamp(3rem, 5vw, 4rem);
+    opacity: 0;
+    animation: sFadeUp 0.9s var(--s-ease) 0.7s forwards;
+}
+
+.services-catalog {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.85rem 1.25rem 0.85rem 1.5rem;
+    background: transparent;
+    border: 1px solid rgba(91, 18, 104, 0.28);
+    border-radius: 999px;
+    color: var(--s-ink-soft);
+    text-decoration: none;
+    font-family: var(--font-base);
+    transition:
+        background 0.4s var(--s-ease),
+        border-color 0.4s var(--s-ease),
+        color 0.4s var(--s-ease),
+        transform 0.4s var(--s-ease);
+}
+
+.services-catalog:hover {
+    background: rgba(91, 18, 104, 0.04);
+    border-color: var(--s-purple);
+    transform: translateY(-1px);
+}
+
+.services-catalog:focus-visible {
+    outline: 2px solid var(--s-gold);
+    outline-offset: 4px;
+}
+
+.services-catalog-text {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--s-ink-soft);
+    text-wrap: pretty;
+}
+
+.services-catalog-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.85rem;
+    background: var(--s-purple);
+    color: var(--s-paper);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    transition: background 0.3s var(--s-ease);
+    flex-shrink: 0;
+}
+
+.services-catalog:hover .services-catalog-cta {
+    background: var(--s-purple-deep);
+}
+
+.services-catalog-cta-icon {
+    display: flex;
+    transition: transform 0.4s var(--s-ease);
+}
+
+.services-catalog-cta-icon svg { width: 12px; height: 12px; }
+
+.services-catalog:hover .services-catalog-cta-icon {
+    transform: translateY(2px);
+}
+
+@media (max-width: 640px) {
+    .services-catalog {
+        flex-direction: column;
+        gap: 0.85rem;
+        padding: 1rem 1.5rem 1.25rem;
+        text-align: center;
+    }
+}
+
+/* ============================================================
+   CIERRE ORNAMENTAL + CONTACTO
+   ============================================================ */
+
+.services-closer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    margin: clamp(2rem, 5vw, 3rem) 0 clamp(2rem, 4vw, 2.5rem);
+}
+
+.services-closer-diamond {
+    width: 6px;
+    height: 6px;
+    transform: rotate(45deg);
+    background: var(--s-gold);
+    opacity: 0.5;
+}
+
+.services-contact {
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.services-contact-text {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--s-ink-soft);
+    margin-bottom: 0.5rem;
+    text-wrap: pretty;
+}
+
+/* Botón WhatsApp con logo oficial verde — protagonista, primero */
+.services-contact-whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1.4rem 0.85rem 0.9rem;
+    background: #25D366;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 999px;
+    box-shadow:
+        0 6px 18px rgba(37, 211, 102, 0.28),
+        0 2px 6px rgba(0, 0, 0, 0.08);
+    transition:
+        transform 0.4s var(--s-ease),
+        box-shadow 0.4s var(--s-ease),
+        background 0.4s var(--s-ease);
+}
+
+.services-contact-whatsapp-btn:hover {
+    background: #1ebe5b;
+    transform: translateY(-2px);
+    box-shadow:
+        0 10px 26px rgba(37, 211, 102, 0.36),
+        0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.services-contact-whatsapp-btn:focus-visible {
+    outline: 2px solid var(--s-gold);
+    outline-offset: 4px;
+}
+
+.services-contact-whatsapp-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.services-contact-whatsapp-text-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.1rem;
+    line-height: 1.1;
+}
+
+.services-contact-whatsapp-eyebrow {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+.services-contact-whatsapp-number {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.005em;
+}
+
+/* Correo: debajo del botón, muy juntos, sin separadores */
+.services-contact-email {
+    display: inline-block;
+    position: relative;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    font-weight: 400;
+    color: var(--s-purple);
+    letter-spacing: 0.005em;
+    padding-bottom: 4px;
+    margin-top: 0.25rem;
+    text-decoration: none;
+    transition: color 0.3s var(--s-ease);
+}
+
+.services-contact-email::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--s-purple) 0%, var(--s-gold) 100%);
+    transform: scaleX(0.7);
+    transform-origin: left;
+    transition: transform 0.4s var(--s-ease);
+}
+
+.services-contact-email:hover { color: var(--s-purple-deep); }
+.services-contact-email:hover::after { transform: scaleX(1); }
+.services-contact-email:focus-visible {
+    outline: 2px solid var(--s-gold);
+    outline-offset: 4px;
+}
+
+/* ============================================================
+   MODAL — Emerge desde la card origen + fix bug navbar
+   ============================================================
+   Bug fix:
+    - align-items: flex-start con padding-top que respeta navbar.
+    - max-height respeta nav-height; el modal nunca toca el navbar.
+    - La X queda visible siempre, sin importar el alto del modal.
+   Emergencia:
+    - Overlay tiene custom-props --origin-x / --origin-y inyectadas
+      desde JS (centro de la card clickeada).
+    - El modal usa esas coords como transform-origin para emerger
+      desde ese punto exacto, no desde el centro de la pantalla.
+   ============================================================ */
+
+.services-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(26, 20, 16, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    /* FIX BUG: anclamos arriba con respiración generosa para el navbar */
+    align-items: flex-start;
+    justify-content: center;
+    padding: calc(var(--nav-height, 72px) + 1.25rem) clamp(1rem, 3vw, 2rem) clamp(1rem, 3vw, 2rem);
+    animation: sOverlayIn 0.45s var(--s-ease);
+}
+
+@keyframes sOverlayIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0);
+        -webkit-backdrop-filter: blur(0);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+}
+
+.services-modal {
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    /* FIX BUG: respetamos navbar y padding del overlay arriba/abajo */
+    max-height: calc(100vh - var(--nav-height, 72px) - 2.5rem);
+    overflow-y: auto;
+    background: var(--s-paper);
+    border-radius: 10px;
+    box-shadow:
+        0 24px 64px rgba(26, 20, 16, 0.32),
+        0 12px 32px rgba(26, 20, 16, 0.18);
+    /* La emergencia: animación con origen variable según la card clickeada.
+       Si no hay origen (no JS rect), cae a centro de pantalla. */
+    transform-origin: var(--origin-x, 50vw) var(--origin-y, 50vh);
+    animation: sModalEmerge 0.5s var(--s-ease) both;
+}
+
+/* Si tenemos rect de origen, usamos animación con escala desde 0.08 — la
+   card "crece" hacia el modal. */
+.services-modal-overlay.has-origin .services-modal {
+    animation: sModalEmergeFromCard 0.55s var(--s-ease) both;
+}
+
+@keyframes sModalEmerge {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes sModalEmergeFromCard {
+    0% {
+        opacity: 0;
+        transform: scale(0.08);
+    }
+    40% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.services-modal::before,
+.services-modal::after {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-color: var(--s-gold);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.services-modal::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+    border-top-left-radius: 10px;
+}
+
+.services-modal::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-bottom-right-radius: 10px;
+}
+
+.services-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(250, 248, 243, 0.85);
+    color: var(--s-ink-soft);
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    /* La X tiene un fondo sutilísimo cremoso por si el contenido scrollea
+       por debajo (se mantiene visible). */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition:
+        transform 0.4s var(--s-ease),
+        background 0.3s var(--s-ease),
+        color 0.3s var(--s-ease);
+}
+
+.services-modal-close:hover {
+    background: var(--s-purple);
+    color: var(--s-paper);
+    transform: rotate(90deg);
+}
+
+.services-modal-close:focus-visible {
+    outline: 2px solid var(--s-gold);
+    outline-offset: 2px;
+}
+
+/* La X queda fija visualmente arriba aunque el modal haga scroll interno */
+.services-modal {
+    /* Reservamos espacio para que el contenido nunca pase por debajo de la X */
+    scroll-padding-top: 3.5rem;
+}
+
+.services-modal-header {
+    padding: clamp(2.5rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem) 0;
+    /* Espacio a la derecha para que el título nunca choque con la X */
+    padding-right: calc(clamp(2rem, 4vw, 3rem) + 2.5rem);
+    text-align: center;
+}
+
+.services-modal-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--s-gold);
+}
+
+.services-modal-kicker-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--s-gold);
+}
+
+.services-modal-name {
+    font-size: clamp(1.6rem, 3.2vw, 2.1rem);
+    font-weight: 300;
+    color: var(--s-ink);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.85rem;
+    text-wrap: balance;
+}
+
+.services-modal-tagline {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--s-ink-muted);
+    max-width: 480px;
+    margin: 0 auto;
+    font-style: italic;
+    text-wrap: pretty;
+}
+
+.services-modal-hairline {
+    width: 80px;
+    height: 1px;
+    margin: 2rem auto 0;
+    background: linear-gradient(90deg,
+        transparent 0%, var(--s-purple) 50%, var(--s-gold) 100%);
+    opacity: 0.7;
+}
+
+.services-modal-body {
+    padding: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+}
+
+.services-modal-description { margin-bottom: 2.25rem; }
+
+.services-modal-description p {
+    font-size: 1.0rem;
+    line-height: 1.78;
+    color: var(--s-ink-soft);
+    margin-bottom: 1rem;
+    text-wrap: pretty;
+}
+
+.services-modal-description p:last-child { margin-bottom: 0; }
+
+.services-modal-lines {
+    padding-top: 1.75rem;
+    border-top: 1px solid rgba(91, 18, 104, 0.14);
+}
+
+.services-modal-lines-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--s-gold);
+    margin-bottom: 1.25rem;
+}
+
+.services-modal-lines-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.services-modal-lines-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: var(--s-ink-soft);
+}
+
+.services-modal-lines-num {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--s-gold);
+    flex-shrink: 0;
+    min-width: 1.5rem;
+}
+
+.services-modal-lines-text { flex: 1; text-wrap: pretty; }
+
+.services-modal-footer {
+    padding: 0 clamp(2rem, 4vw, 3rem) clamp(2.5rem, 4vw, 3rem);
+    display: flex;
+    justify-content: center;
+}
+
+.services-modal-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 1.75rem;
+    background: transparent;
+    color: var(--s-purple);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    border: 1px solid var(--s-purple);
+    border-radius: 999px;
+    transition:
+        background 0.4s var(--s-ease),
+        color 0.4s var(--s-ease),
+        transform 0.4s var(--s-ease);
+}
+
+.services-modal-cta:hover {
+    background: var(--s-purple);
+    color: var(--s-paper);
+    transform: translateY(-2px);
+}
+
+.services-modal-cta:focus-visible {
+    outline: 2px solid var(--s-gold);
+    outline-offset: 4px;
+}
+
+.services-modal-cta-icon {
+    display: flex;
+    transition: transform 0.4s var(--s-ease);
+}
+
+.services-modal-cta-icon svg { width: 14px; height: 14px; }
+
+.services-modal-cta:hover .services-modal-cta-icon {
+    transform: translateY(2px);
+}
+
+/* ============================================================
+   ANIMACIONES BASE
+   ============================================================ */
+
+@keyframes sFadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   PREFERS-REDUCED-MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .services-header,
+    .services-grid-intro,
+    .services-card-wrap,
+    .services-catalog-wrap {
+        opacity: 1;
+        animation: none;
+    }
+
+    .services-modal-overlay,
+    .services-modal,
+    .services-modal-overlay.has-origin .services-modal {
+        animation: sModalFadeIn 0.2s ease both;
+        transform: none;
+    }
+
+    @keyframes sModalFadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .services-card-border {
+        animation: none !important;
+    }
+
+    .services-card:hover,
+    .services-card:focus-visible,
+    .services-catalog:hover,
+    .services-contact-whatsapp-btn:hover,
+    .services-modal-cta:hover {
+        transform: none;
+    }
+
+    .services-card:hover .services-card-content,
+    .services-card:focus-visible .services-card-content,
+    .services-card:hover .services-card-icon,
+    .services-card:focus-visible .services-card-icon,
+    .services-card:hover .services-card-icon svg,
+    .services-card:focus-visible .services-card-icon svg {
+        transform: none;
+    }
+
+    .services-modal-close:hover { transform: none; }
+}

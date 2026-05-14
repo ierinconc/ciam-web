@@ -48,7 +48,7 @@ function StrategicNorth() {
                 <header className="sn-header">
                 
                     <h2 id="sn-title" className="sn-title">
-                        Misión <em>y</em> Visión
+                        Misión y Visión
                     </h2>
                     <p className="sn-lead">
                         Dos declaraciones que orientan todo lo que hacemos.
