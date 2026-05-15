@@ -622,7 +622,67 @@
     .sn-card.is-open {
         aspect-ratio: auto;
         padding: 2rem;
-        min-height: 300px;
+        /* Patch 28: en lugar de min-height fijo que recortaba el texto,
+           usamos un tope inteligente que deja la card razonable y permite
+           scroll interno cuando el contenido excede ese tope. */
+        min-height: auto;
+        max-height: min(75vh, 540px);
+        overflow: hidden; /* el scroll real lo maneja .sn-card-body */
+        /* Fade dorado en el borde inferior para sugerir más contenido scrolleable */
+        position: relative;
+    }
+
+    /* Mascara fade en el borde inferior de la card abierta:
+       le da una pista visual al usuario de que hay contenido scrolleable */
+    .sn-card.is-open::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 36px;
+        pointer-events: none;
+        background: linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.85) 60%,
+            rgba(255, 255, 255, 0.96) 100%
+        );
+        border-radius: 0 0 28px 28px;
+        z-index: 2;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    /* El fade solo aparece cuando hay scroll real disponible.
+       Usamos data-attribute para esto desde JS si fuera necesario,
+       pero como aproximación CSS lo dejamos siempre y depende del overflow real. */
+    .sn-card.is-open.has-overflow::after {
+        opacity: 1;
+    }
+
+    /* El cuerpo de la card abierta es lo que scrollea */
+    .sn-card.is-open .sn-card-body {
+        max-height: 100%;
+        overflow-y: auto;
+        /* Padding inferior extra para que el fade no tape la última línea */
+        padding-bottom: 1.5rem;
+        /* Scroll suave en iOS */
+        -webkit-overflow-scrolling: touch;
+        /* Scrollbar discreto que respeta paleta CIAM */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(91, 18, 104, 0.35) transparent;
+    }
+
+    .sn-card.is-open .sn-card-body::-webkit-scrollbar {
+        width: 4px;
+    }
+    .sn-card.is-open .sn-card-body::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .sn-card.is-open .sn-card-body::-webkit-scrollbar-thumb {
+        background: rgba(91, 18, 104, 0.35);
+        border-radius: 2px;
     }
 }
 
@@ -667,7 +727,9 @@
 .sn-card .sn-card-body {
     width: 100%;
     max-width: 100%;
-    overflow: hidden;
+    /* Patch 28: el overflow lo gestionan los media queries específicos.
+       En desktop la card se acomoda a su contenido; en mobile la card
+       abierta tiene tope con scroll interno (definido en @media). */
 }
 
 .sn-card:not(.is-open) .sn-card-title {

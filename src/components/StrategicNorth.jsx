@@ -17,6 +17,36 @@ const ITEMS = [
 function StrategicNorth() {
     const [openId, setOpenId] = useState(null)
     const sectionRef = useRef(null)
+    // Patch 28: refs a las cards para detectar overflow real en mobile
+    const cardRefs = useRef({})
+
+    // Patch 28: cuando una card se abre, detecta si tiene overflow scrolleable
+    // y agrega clase has-overflow para mostrar el fade. Reactiva al cambiar viewport.
+    useEffect(() => {
+        if (!openId) return
+
+        const checkOverflow = () => {
+            const card = cardRefs.current[openId]
+            if (!card) return
+            const body = card.querySelector('.sn-card-body')
+            if (!body) return
+            // Si el contenido es más alto que el contenedor → hay scroll
+            if (body.scrollHeight > body.clientHeight + 2) {
+                card.classList.add('has-overflow')
+            } else {
+                card.classList.remove('has-overflow')
+            }
+        }
+
+        // Pequeño delay para que la animación de apertura termine y se midan
+        // las alturas reales (no las del estado cerrado).
+        const t = setTimeout(checkOverflow, 350)
+        window.addEventListener('resize', checkOverflow)
+        return () => {
+            clearTimeout(t)
+            window.removeEventListener('resize', checkOverflow)
+        }
+    }, [openId])
 
     // Cerrar al clickear afuera (solo en mobile / cuando se activa por click)
     useEffect(() => {
@@ -65,6 +95,7 @@ function StrategicNorth() {
                         return (
                             <article
                                 key={item.id}
+                                ref={(el) => { cardRefs.current[item.id] = el }}
                                 className={`sn-card sn-card--${item.id} ${isOpen ? 'is-open' : ''}`}
                                 onMouseEnter={() => setOpenId(item.id)}
                                 onClick={() => handleToggle(item.id)}

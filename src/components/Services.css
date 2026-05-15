@@ -307,18 +307,15 @@
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     opacity: 0.72;
-    /* Animación que SOLO se reproduce al hover. En reposo el cono es estático. */
-    animation: sBorderSpin 14s linear infinite;
-    animation-play-state: paused;
+    /* Patch 28: el marco cónico ahora es estático. Antes giraba al hover
+       pero en mobile el efecto se queda congelado después de soltar y queda raro.
+       Mantenemos el gradiente metálico que sigue siendo bonito, sin rotación. */
     transition:
         opacity 0.5s var(--s-ease),
         filter 0.5s var(--s-ease);
 }
 
-@keyframes sBorderSpin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
+/* Patch 28: keyframe sBorderSpin removido. El marco cónico ya no rota. */
 
 /* Halo exterior que aparece sutilmente al hover (luz que rodea la card) */
 .services-card-glow {
@@ -367,7 +364,7 @@
 .services-card:hover .services-card-border {
     opacity: 1;
     filter: saturate(1.25) brightness(1.1);
-    animation-play-state: running;
+    /* Patch 28: sin animación de rotación. Solo el marco se ilumina al hover. */
 }
 
 .services-card:hover .services-card-glow {
@@ -392,7 +389,7 @@
 .services-card:focus-visible .services-card-border {
     opacity: 1;
     filter: saturate(1.25) brightness(1.1);
-    animation-play-state: running;
+    /* Patch 28: marco estático también en focus */
 }
 
 .services-card:focus-visible .services-card-glow { opacity: 1; }
