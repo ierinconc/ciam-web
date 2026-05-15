@@ -622,13 +622,14 @@
     .sn-card.is-open {
         aspect-ratio: auto;
         padding: 2rem;
-        /* Patch 28: en lugar de min-height fijo que recortaba el texto,
-           usamos un tope inteligente que deja la card razonable y permite
-           scroll interno cuando el contenido excede ese tope. */
+        /* Patch 28+29: la card abierta no tiene altura fija. Usamos un tope
+           inteligente (75vh / 540px) y el cuerpo scrollea si el contenido
+           excede ese tope. El height: 320px del estado cerrado se
+           sobrescribe explícitamente para que la card pueda crecer. */
+        height: auto;
         min-height: auto;
         max-height: min(75vh, 540px);
         overflow: hidden; /* el scroll real lo maneja .sn-card-body */
-        /* Fade dorado en el borde inferior para sugerir más contenido scrolleable */
         position: relative;
     }
 
@@ -727,9 +728,10 @@
 .sn-card .sn-card-body {
     width: 100%;
     max-width: 100%;
-    /* Patch 28: el overflow lo gestionan los media queries específicos.
-       En desktop la card se acomoda a su contenido; en mobile la card
-       abierta tiene tope con scroll interno (definido en @media). */
+    /* Patch 28+29: en estado cerrado mantenemos overflow hidden (no debería
+       haber scroll en una card de presentación). En estado abierto solo en
+       mobile se vuelve scrolleable — ver media query (max-width: 720px). */
+    overflow: hidden;
 }
 
 .sn-card:not(.is-open) .sn-card-title {
