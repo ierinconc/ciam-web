@@ -18,7 +18,7 @@ function Footer() {
                             onClick={() => navigate('/')}
                         />
                         <p>
-                            Centro de Investigación y Análisis de Medios.
+                            Centro de Investigación, Análisis y Mediaciones.
                             Centro de Pensamiento dedicado a articular y fortalecer
                             los saberes que circulan en la democracia colombiana.
                         </p>
