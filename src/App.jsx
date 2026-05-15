@@ -3,6 +3,7 @@ import './App.css'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
+import ScrollResetOnRoute from './components/ScrollResetOnRoute'
 import Home from './components/Home'
 import ArticleList from './components/ArticleList'
 import ArticlePage from './components/ArticlePage'
@@ -15,6 +16,8 @@ import Archivo from './components/Archivo'
 function App() {
   return (
     <BrowserRouter>
+      {/* Patch 30: resetea scroll a top al cambiar de ruta */}
+      <ScrollResetOnRoute />
       <Navbar />
       <main>
         <Routes>
