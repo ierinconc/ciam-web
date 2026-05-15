@@ -3,11 +3,9 @@ import './Hero.css'
 function Hero() {
     return (
         <section className="hero">
-            <div
-                className="hero-bg"
-                style={{ backgroundImage: 'url(/hero.jpg)' }}
-                aria-hidden="true"
-            />
+            {/* Patch 31: background image se sirve desde CSS (responsive con media queries
+                + preload en index.html). Antes era inline style con /hero.jpg fijo. */}
+            <div className="hero-bg" aria-hidden="true" />
             <div className="hero-overlay" aria-hidden="true" />
             <div className="hero-grain" aria-hidden="true" />
 

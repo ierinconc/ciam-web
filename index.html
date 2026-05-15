@@ -7,6 +7,38 @@
     <meta name="description" content="CIAM — Centro de Investigación y Análisis de Medios. Centro de pensamiento dedicado a articular y fortalecer los saberes que circulan en la democracia colombiana." />
     <meta name="theme-color" content="#5b1268" />
 
+    <!-- Patch 31: Performance — preconnect a Google Fonts (TCP + TLS antes de pedir el CSS) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Patch 31: Preload del CSS de fuentes para que arranque temprano -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap"
+    />
+
+    <!-- Patch 31: Preload del fondo del Hero (LCP del Home) para que el navegador
+         lo descargue ANTES de procesar el CSS. Esto reduce LCP ~1-2s en mobile. -->
+    <link
+      rel="preload"
+      as="image"
+      href="/hero.webp"
+      type="image/webp"
+      media="(min-width: 721px)"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/hero-mobile.webp"
+      type="image/webp"
+      media="(max-width: 720px)"
+    />
+
     <!-- Open Graph -->
     <meta property="og:title" content="CIAM — Centro de Investigación y Análisis de Medios" />
     <meta property="og:description" content="Investigamos los medios. Analizamos lo público. Pensamos la democracia que viene." />

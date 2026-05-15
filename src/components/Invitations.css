@@ -27,6 +27,7 @@
     inset: 0;
     z-index: -2;
     background-image: url('/taller-ciam.jpg');
+    background-image: url('/taller-ciam.webp');
     background-size: cover;
     background-position: center;
     filter: grayscale(0.95) blur(2px) brightness(1.1) contrast(0.92);
@@ -563,5 +564,13 @@
     .inv-banner-marquee-track {
         transition-duration: 0.1s !important;
         animation: none !important;
+    }
+}
+
+/* Patch 31: Fondo mobile específico, más liviano */
+@media (max-width: 720px) {
+    .inv .inv-bg-image {
+        background-image: url('/taller-ciam.jpg');
+        background-image: url('/taller-ciam-mobile.webp');
     }
 }

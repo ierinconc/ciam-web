@@ -67,6 +67,7 @@
     inset: 0;
     z-index: -3;
     background-image: url('/ciam-mision-vision-bg.jpg');
+    background-image: url('/ciam-mision-vision-bg.webp');
     background-size: cover;
     background-position: center 40%;
     filter: grayscale(0.92) brightness(1.05) contrast(0.95);
@@ -759,4 +760,14 @@
     letter-spacing: -0.02em;
     margin: 0 0 1rem 0;
     transition: opacity 0.4s ease;
+}
+/* ============================================================
+   PATCH 31 — Fondo mobile más liviano (ahorra ~70 KB en celulares)
+   ============================================================ */
+@media (max-width: 720px) {
+    .sn-bg {
+        background-image: url('/ciam-mision-vision-bg.jpg');
+        background-image: url('/ciam-mision-vision-bg-mobile.webp');
+        background-attachment: scroll; /* parallax fijo se ve mal en mobile */
+    }
 }

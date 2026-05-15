@@ -18,6 +18,18 @@
     filter: grayscale(0.3) contrast(1.05) brightness(0.7);
     transform: scale(1.05);
     animation: heroZoom 18s ease-out forwards;
+    /* Patch 31: Imagen optimizada a webp. Fallback automático a jpg para
+       navegadores ultra-antiguos vía declaración doble. Desktop usa /hero.webp,
+       mobile usa /hero-mobile.webp (~70% más liviano). */
+    background-image: url('/hero.jpg');
+    background-image: url('/hero.webp');
+}
+
+@media (max-width: 720px) {
+    .hero-bg {
+        background-image: url('/hero.jpg');
+        background-image: url('/hero-mobile.webp');
+    }
 }
 
 .hero-overlay {
