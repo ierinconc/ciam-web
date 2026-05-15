@@ -31,10 +31,10 @@ const teamData = [
         icon: 'compass',
         bio: [
             'Politólogo de la Universidad Nacional de Colombia con trayectoria en gestión pública territorial y distrital. Ha trabajado en la formulación, implementación y seguimiento de políticas públicas con enfoque diferencial, especialmente para sectores LGBTI y poblaciones de niñez y adolescencia.',
-            'Actualmente se desempeña como asesor del director general de la Unidad Nacional de Protección. Su experiencia previa incluye la Secretaría Distrital de Integración Social y la Alcaldía de Sopó, donde lideró la formulación de la Política Pública de Primera Infancia, Infancia y Adolescencia.',
+            'Actualmente se desempeña como asesor del director general de la Unidad Nacional de Protección (abril de 2026 — actualidad). Su experiencia previa incluye la Secretaría Distrital de Integración Social y la Alcaldía de Sopó, donde lideró la formulación de la Política Pública de Primera Infancia, Infancia y Adolescencia 2026–2036.',
             'En CIAM se ha vinculado como investigador asociado en líneas de democracia, participación juvenil y análisis de coyuntura, con producción de informes sobre prensa, discurso y política.',
         ],
-        education: 'Politólogo, Universidad Nacional de Colombia · Diplomado en Construcción de Paz y Derechos Humanos, ESAP · ',
+        education: 'Politólogo, Universidad Nacional de Colombia · Diplomado en Construcción de Paz y Derechos Humanos',
         focus: ['Política pública', 'Enfoque diferencial', 'Análisis de coyuntura', 'Gestión territorial'],
     },
     {
@@ -59,14 +59,15 @@ const teamData = [
         role: 'Director de Comunicaciones',
         avatar: '/team/sebastian.webp',
         avatarLarge: '/team/sebastian-large.webp',
-        cv: null, // Pendiente de envío
+        cv: '/team/cv/sebastian.pdf',
         icon: 'waves',
         bio: [
-            'Encabeza la estrategia de comunicaciones del CIAM, traduciendo la investigación académica a piezas de comunicación pública con claridad, contexto y propósito.',
-            'Su trabajo conecta a los investigadores del Centro con sus audiencias: ciudadanos, periodistas, formuladores de política y comunidad académica.',
+            'Politólogo de la Universidad Nacional de Colombia, especializado en análisis, coordinación y gestión de proyectos sociales. Su trabajo combina investigación social, comunicación política y organizacional con experiencia en ayuda humanitaria, relaciones públicas y coordinación de equipos.',
+            'Como Director de Comunicaciones del CIAM, dirige el diseño de la imagen corporativa, la formulación e implementación de la estrategia de comunicaciones digitales y el posicionamiento de la oferta de servicios del centro. Su trabajo incluye la producción audiovisual para difundir la investigación del CIAM y adaptarla a sus públicos objetivo, así como la gestión de las relaciones públicas y la cooperación organizacional.',
+            'Coordinó el grupo estudiantil LUPA (Laboratorio Universitario para Análisis de Coyuntura) durante su formación en la Universidad Nacional. Ha sido mediador voluntario de la Unidad de Búsqueda de Personas Dadas por Desaparecidas y coordinador de proyectos en la Fundación Comunidad Viva.',
         ],
-        education: 'Formación pendiente de confirmar',
-        focus: ['Comunicación pública', 'Estrategia editorial', 'Mediación entre investigación y ciudadanía'],
+        education: 'Politólogo, Universidad Nacional de Colombia · Análisis de Datos, Alura/Oracle',
+        focus: ['Comunicación política', 'Investigación social', 'Estrategia digital', 'Producción audiovisual', 'Coordinación de proyectos'],
     },
     {
         id: 'vonny',
@@ -146,7 +147,7 @@ function Team() {
                 <header className="team-header">
                     <div className="team-kicker" aria-hidden="true">
                         <span className="team-kicker-dot" />
-                        <span className="team-kicker-label">Equipo</span>
+                      
                         <span className="team-kicker-dot" />
                     </div>
 
