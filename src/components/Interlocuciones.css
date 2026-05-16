@@ -138,12 +138,17 @@
 
 .ilocs-title {
     font-family: var(--font-base);
-    font-size: clamp(3rem, 6.5vw, 5rem);
+    /* Patch 32: bajamos el mínimo de 3rem a 2.2rem porque "Interlocuciones" tiene
+       14 letras y se cortaba en mobiles de 360-380px. En desktop sigue grande. */
+    font-size: clamp(2.2rem, 6.5vw, 5rem);
     font-weight: 600;
     color: var(--il-purple);
     line-height: 1.05;
     letter-spacing: -0.025em;
     text-wrap: balance;
+    /* Por si algún navegador ignora text-wrap, garantizamos el wrap normal */
+    word-break: normal;
+    overflow-wrap: break-word;
     margin-bottom: 1.5rem;
 }
 
